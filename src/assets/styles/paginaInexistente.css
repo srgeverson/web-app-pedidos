@@ -1,0 +1,17 @@
+body {
+    background-image: url('../images/background_pagina_inexistente.png');
+}
+
+.error-template {
+    padding: 40px 15px;
+    text-align: center;
+}
+
+.error-actions {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.error-actions .btn {
+    margin-right: 10px;
+}
