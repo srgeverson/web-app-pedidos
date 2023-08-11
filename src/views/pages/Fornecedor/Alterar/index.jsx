@@ -82,13 +82,13 @@ const Alterar = () => {
     }
 
     if (formularioSucesso)
-        return <Navigate to={`${publicURL}${rotas.listaDeFornecedores}`} state={{ mensagem: 'Fornecedor alterado com sucesso!' }} replace />
+        return <Navigate to={`${publicURL}${rotas.listaDeFornecedor}`} state={{ mensagem: 'Fornecedor alterado com sucesso!' }} replace />
 
     return (
         <div>
             <div className="d-flex justify-content-between">
                 <div className="mr-auto p-2">
-                    <Link to={`${publicURL}${rotas.listaDeFornecedores}`}>
+                    <Link to={`${publicURL}${rotas.listaDeFornecedor}`}>
                         <button className="btn btn-outline-success btn-sm">
                             Listar
                         </button>

@@ -4,7 +4,7 @@ export const rotas = {
     alteracaoDeProduto:'/produtos-alterar/',
     cadastroDeFornecedor: '/fornecedores-cadastrar',
     cadastroDeProduto: '/produtos-cadastrar',
-    listaDeFornecedores: '/fornecedores',
+    listaDeFornecedor: '/fornecedores',
     listaDePedidos: '/pedidos',
     listaDeProdutos: '/produtos',
     paginaInicial: '/',
