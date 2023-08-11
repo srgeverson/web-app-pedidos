@@ -63,6 +63,9 @@ $ npm install
 # Execute a aplicação web
 $ npm start
 
+# Publicar a plicação
+$ npm run deploy
+
 ```
 
 ## 👨‍💻 Equipe de Desenvolvimento
