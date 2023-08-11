@@ -31,8 +31,8 @@ const Criar = () => {
 
         setAguardando(true);
         const usuarioCadastrado = await fornecedorService.cadastrar({ cnpj, razaoSocial, nomeContato, emailContato, uf });
-        if (usuarioCadastrado.codigo) {
-            if (usuarioCadastrado.codigo === 500) {
+        if (usuarioCadastrado.statusCode) {
+            if (usuarioCadastrado.statusCode === 500) {
                 setAtencao('');
                 setErro({ mensagem: usuarioCadastrado.descricao });
             } else {

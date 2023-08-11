@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
-import FornecedorService from '../../../../service/FornecedorService';
+import ProdutoService from '../../../../service/ProdutoService';
 import AlertaAtencao from '../../../components/AlertaAtencao';
 import AlertaErro from '../../../components/AlertaErro';
 import { publicURL, rotas } from '../../../../core/Config';
 import ModalCarregando from '../../../components/ModalCarregando';
+import { formataDataEHora, formataMoeda } from '../../../../core/Utils';
 
 const Visualizar = () => {
     const { id } = useParams();
-    const [fornecedor, setFornecedor] = useState(null);
+    const [produto, setProduto] = useState(null);
     const [atencao, setAtencao] = useState('');
     const [erro, setErro] = useState('');
-    const fornecedorService = new FornecedorService();
+    const produtoService = new ProdutoService();
     const [aguardando, setAguardando] = useState(false);
     const location = useLocation();
 
@@ -28,17 +29,17 @@ const Visualizar = () => {
 
     const getUsuario = async (id) => {
         setAguardando(true);
-        const fornecedorPorId = await fornecedorService.buscarPorId(id);
-        if (fornecedorPorId.statusCode) {
-            if (fornecedorPorId.statusCode === 500) {
+        const produtoPorId = await produtoService.buscarPorId(id);
+        if (produtoPorId.statusCode) {
+            if (produtoPorId.statusCode === 500) {
                 setAtencao('');
-                setErro({ mensagem: fornecedorPorId.message });
+                setErro({ mensagem: produtoPorId.message });
             } else {
                 setErro('');
-                setAtencao({ mensagem: fornecedorPorId.message });
+                setAtencao({ mensagem: produtoPorId.message });
             }
         } else 
-            setFornecedor(fornecedorPorId);
+            setProduto(produtoPorId);
         setAguardando(false);
     }
 
@@ -46,19 +47,19 @@ const Visualizar = () => {
         <div>
             <div className="d-flex justify-content-between">
                 <div className="mr-auto p-2">
-                    <Link to={`${publicURL}${rotas.listaDeFornecedores}`}>
+                    <Link to={`${publicURL}/produtos`}>
                         <button className="btn btn-outline-success btn-sm">
                             Listar
                         </button>
                     </Link>
                 </div>
                 <div className="mr-auto p-2">
-                    <h2 className="display-4 titulo">Detalhes do Fornecedor</h2>
+                    <h2 className="display-4 titulo">Detalhes do Produto</h2>
                     <AlertaErro erro={erro} />
                     <AlertaAtencao atencao={atencao} />
                 </div>
                 <div className="mr-auto p-2">
-                    <Link to={`${publicURL}${rotas.alteracaoDeFornecedor}${id}`}>
+                    <Link to={`${publicURL}${rotas.alteracaoDeProduto}${id}`}>
                         <button className="ml-1 btn btn-outline-warning btn-sm">
                             Editar
                         </button>
@@ -67,27 +68,23 @@ const Visualizar = () => {
             </div>
             <hr />
             {
-                fornecedor && !aguardando ?
+                produto && !aguardando ?
                     <div>
                         <div className="form-floating mb-3">
-                            <input type="text" className="form-control-plaintext" id="cnpj" placeholder="CNPJ" value={fornecedor.cnpj} onChange={() => { }} />
-                            <label htmlFor="cnpj">CNPJ</label>
+                            <input type="text" className="form-control-plaintext" id="codigo" placeholder="Código do produto" value={produto.codigo} onChange={() => { }} />
+                            <label htmlFor="codigo">Códido do Produto</label>
                         </div>
                         <div className="form-floating mb-3">
-                            <input type="text" className="form-control-plaintext" id="razaoSocial" placeholder="Nome" value={fornecedor.razaoSocial} onChange={() => { }} />
-                            <label htmlFor="razaoSocial">Raxão Social</label>
+                            <input type="text" className="form-control-plaintext" id="descricao" placeholder="Descrição do produto" value={produto.descricao} onChange={() => { }} />
+                            <label htmlFor="descricao">Raxão Social</label>
                         </div>
                         <div className="form-floating mb-3">
-                            <input type="text" className="form-control-plaintext" id="uf" placeholder="UF" value={fornecedor.uf} onChange={() => { }} />
-                            <label htmlFor="uf">UF</label>
+                            <input type="text" className="form-control-plaintext" id="valor" placeholder="E-mail" value={formataMoeda(produto.valor)} onChange={() => { }} />
+                            <label htmlFor="valor">Valor do Produto</label>
                         </div>
                         <div className="form-floating mb-3">
-                            <input type="text" className="form-control-plaintext" id="nomeContato" placeholder="Nome do contato" value={fornecedor.nomeContato} onChange={() => { }} />
-                            <label htmlFor="nomeContato">Nome Contato</label>
-                        </div>
-                        <div className="form-floating mb-3">
-                            <input type="text" className="form-control-plaintext" id="emailContato" placeholder="E-mail do contato" value={fornecedor.emailContato} onChange={() => { }} />
-                            <label htmlFor="emailContato">E-mail Contato</label>
+                            <input type="text" className="form-control-plaintext" id="dataCadastro" placeholder="E-mail" value={formataDataEHora(produto.dataCadastro)} onChange={() => { }} />
+                            <label htmlFor="dataCadastro">Data de Cadastro</label>
                         </div>
                         <br />
                     </div>

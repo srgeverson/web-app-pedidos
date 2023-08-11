@@ -1,12 +1,14 @@
 export const publicURL = process.env.PUBLIC_URL ? process.env.PUBLIC_URL : 'web-app-pedidos';
 export const rotas = {
     alteracaoDeFornecedor:'/fornecedores-alterar/',
-    visualizacaoDeFornecedores: '/fornecedores-visualizar/',
+    alteracaoDeProduto:'/produtos-alterar/',
     cadastroDeFornecedor: '/fornecedores-cadastrar',
+    cadastroDeProduto: '/produtos-cadastrar',
     listaDeFornecedores: '/fornecedores',
     listaDePedidos: '/pedidos',
     listaDeProdutos: '/produtos',
     paginaInicial: '/',
     paginaDesconhecida: '*',
-    remocaoDeFornecedor: '/fornecedores-apagar',//verificar necessidade
+    visualizacaoDeFornecedores: '/fornecedores-visualizar/',
+    visualizacaoDeProduto: '/produtos-visualizar/',
 };

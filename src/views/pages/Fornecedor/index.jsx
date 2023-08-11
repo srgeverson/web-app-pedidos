@@ -39,8 +39,8 @@ const Fornecedor = () => {
     const pesquisarFornecedores = async () => {
         setAguardando(true);
         const listarTodos = await fornecedorService.listarTodos();
-        if (listarTodos.codigo) {
-            if (listarTodos.codigo === 500) {
+        if (listarTodos.statusCode) {
+            if (listarTodos.statusCode === 500) {
                 setAtencao('');
                 setErro({ mensagem: listarTodos.mensagem });
             } else {
@@ -55,8 +55,8 @@ const Fornecedor = () => {
     const apagarFornecedor = async () => {
         setAguardando(true);
         const apagar = await fornecedorService.apagarPorId(idParaApagar);
-        if (apagar.codigo) {
-            if (apagar.codigo === 500) {
+        if (apagar.statusCode) {
+            if (apagar.statusCode === 500) {
                 setAtencao('');
                 setSucesso('');
                 setErro({ mensagem: apagar.mensagem });

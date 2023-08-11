@@ -4,34 +4,31 @@ import { Form, FormGroup, Label, Input } from 'reactstrap';
 import { publicURL, rotas } from '../../../../core/Config';
 import BotaoConfirmar from '../../../components/BotaoConfirmar';
 import AlertaErro from '../../../components/AlertaErro';
-import FornecedorService from '../../../../service/FornecedorService';
+import ProdutoService from '../../../../service/ProdutoService';
 import AlertaAtencao from '../../../components/AlertaAtencao';
 import AlertaSucesso from '../../../components/AlertaSucesso';
 import ModalCarregando from '../../../components/ModalCarregando';
 
 const Alterar = () => {
-    const [cnpj, setCnpj] = useState('');
-    const [razaoSocial, setRazaoSocial] = useState('');
-    const [emailContato, setEmailContato] = useState('');
-    const [uf, setUf] = useState('');
-    const [nomeContato, setNomeContato] = useState('');
+    const [codigo, setCodigo] = useState('');
+    const [descricao, setDescricao] = useState('');
+    const [valor, setValor] = useState('');
     const [atencao, setAtencao] = useState('');
     const [sucesso, setSucesso] = useState('');
     const [erro, setErro] = useState('');
     const [aguardando, setAguardando] = useState(false);
     const [formularioSucesso, setFormularioSucesso] = useState(false);
-    const fornecedorService = new FornecedorService();
+    const frodutoService = new ProdutoService();
     const { id } = useParams();
-    const ufs = ['RO', 'AC', 'AM', 'RR', 'PA', 'AP', 'TO', 'MA', 'PI', 'CE', 'RN', 'PB', 'PE', 'AL', 'SE', 'BA', 'MG', 'ES', 'RJ', 'SP', 'PR', 'SC', 'RS', 'MS', 'MT', 'GO', 'DF'];
 
     useEffect(() => {
-        receberDadosFornecedor();
+        receberDadosProduto();
         // eslint-disable-next-line
     }, [id]);
 
-    const receberDadosFornecedor = async () => {
+    const receberDadosProduto = async () => {
         setAguardando(true);
-        const fornecedorPorId = await fornecedorService.buscarPorId(id);
+        const fornecedorPorId = await frodutoService.buscarPorId(id);
         if (fornecedorPorId.statusCode) {
             if (fornecedorPorId.statusCode === 500) {
                 setAtencao('');
@@ -42,24 +39,22 @@ const Alterar = () => {
             }
         } else {
             if (fornecedorPorId) {
-                setCnpj(fornecedorPorId.cnpj);
-                setRazaoSocial(fornecedorPorId.razaoSocial);
-                setUf(fornecedorPorId.uf);
-                setNomeContato(fornecedorPorId.nomeContato);
-                setEmailContato(fornecedorPorId.emailContato);
+                setCodigo(fornecedorPorId.codigo);
+                setDescricao(fornecedorPorId.descricao);
+                setValor(fornecedorPorId.valor);
             }
         }
         setAguardando(false);
     }
 
-    const alterarFornecedor = async () => {
+    const alterarProduto = async () => {
         setErro('');
 
         if (!criticas())
             return;
 
         setAguardando(true);
-        const fornecedorAlterado = await fornecedorService.alterar(id, {cnpj:id, razaoSocial, nomeContato, emailContato, uf });
+        const fornecedorAlterado = await frodutoService.alterar(id, {codigo:id, descricao, valor });
 
         if (fornecedorAlterado.statusCode) {
             if (fornecedorAlterado.statusCode === 500) {
@@ -82,23 +77,23 @@ const Alterar = () => {
     }
 
     if (formularioSucesso)
-        return <Navigate to={`${publicURL}${rotas.listaDeFornecedores}`} state={{ mensagem: 'Fornecedor alterado com sucesso!' }} replace />
+        return <Navigate to={`${publicURL}${rotas.listaDeProdutos}`} state={{ mensagem: 'Produto alterado com sucesso!' }} replace />
 
     return (
         <div>
             <div className="d-flex justify-content-between">
                 <div className="mr-auto p-2">
-                    <Link to={`${publicURL}${rotas.listaDeFornecedores}`}>
+                    <Link to={`${publicURL}${rotas.listaDeProdutos}`}>
                         <button className="btn btn-outline-success btn-sm">
                             Listar
                         </button>
                     </Link>
                 </div>
                 <div className="mr-auto p-2">
-                    <h2 className="display-4 titulo">Atualizar Fornecedor</h2>
+                    <h2 className="display-4 titulo">Atualizar Produto</h2>
                 </div>
                 <div className="mr-auto p-2">
-                    <Link to={`${publicURL}${rotas.visualizacaoDeFornecedores}${id}`}>
+                    <Link to={`${publicURL}${rotas.visualizacaoDeProduto}${id}`}>
                         <button className="ml-1 btn btn-outline-info btn-sm">
                             Visualisar
                         </button>
@@ -112,69 +107,44 @@ const Alterar = () => {
             <ModalCarregando isOpen={aguardando} pagina='Processando solicitação' />
             <Form>
                 <FormGroup>
-                    <Label for="emailContato">CNPJ</Label>
+                    <Label for="valor">Código</Label>
                     <Input
                         type="number"
-                        value={cnpj}
-                        name="cnpj"
-                        id="cnpj"
+                        value={codigo}
+                        name="codigo"
+                        id="codigo"
                         className="form-control"
-                        autoComplete="cnpj"
+                        autoComplete="codigo"
                         placeholder="CNPJ"
-                        onChange={(ev) => setCnpj(ev.target.value)}
+                        onChange={(ev) => setCodigo(ev.target.value)}
                         disabled
                     />
                 </FormGroup>
                 <FormGroup>
-                    <Label for="razaoSocial">Razão Social</Label>
+                    <Label for="descricao">Descrição do Produto</Label>
                     <Input
                         type="text"
-                        value={razaoSocial}
-                        name="razaoSocial"
-                        id="razaoSocial"
+                        value={descricao}
+                        name="descricao"
+                        id="descricao"
                         className="form-control"
-                        autoComplete="razaoSocial"
-                        placeholder="Razão social"
-                        onChange={(ev) => setRazaoSocial(ev.target.value)}
+                        autoComplete="descricao"
+                        placeholder="Descrição do Produto"
+                        onChange={(ev) => setDescricao(ev.target.value)}
                     />
                 </FormGroup>
                 <FormGroup>
-                    <Label for="uf">UF</Label>
-                    <select
-                        className="form-select form-select-lg mb-3"
-                        aria-label="Large select example" 
-                        placeholder="Selecione uma UF"
-                        onChange={(ev) => setUf(ev.target.value)}>
-                        <option key={''}></option>
-                        {ufs.map(
-                            (uf) => (
-                                <option key={uf} value={uf}>{uf}</option>
-                            )
-                        )}
-                    </select>
-                </FormGroup>
-                <FormGroup>
-                    <Label for="emailContato">E-mail Contato</Label>
+                    <Label for="valor">Valor do Produto</Label>
                     <Input
                         type="email"
-                        value={emailContato}
-                        name="emailContato"
-                        id="emailContato"
+                        value={valor}
+                        name="valor"
+                        id="valor"
                         placeholder="E-mail de contato"
-                        onChange={(ev) => setEmailContato(ev.target.value)} />
-                </FormGroup>
-                <FormGroup>
-                    <Label for="nomeContato">Nome Contato</Label>
-                    <Input
-                        type="text"
-                        value={nomeContato}
-                        name="nomeContato"
-                        id="nomeContato"
-                        placeholder="Nome do contato"
-                        onChange={(ev) => setNomeContato(ev.target.value)} />
+                        onChange={(ev) => setValor(ev.target.value)} />
                 </FormGroup>
                 <br />
-                <Link onClick={() => alterarFornecedor()} to="#">
+                <Link onClick={() => alterarProduto()} to="#">
                     <BotaoConfirmar aguardando={aguardando} />
                 </Link>
             </Form>
