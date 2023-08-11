@@ -16,7 +16,7 @@ class ProdutoService {
 
     async apagarPorId(id) {
         return await api()
-            .delete(`/produto/apagar?id=${id}`)
+            .delete(`/produto/apagar?codigo=${id}`)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
             })
