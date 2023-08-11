@@ -78,16 +78,16 @@ const Visualizar = () => {
                             <label htmlFor="razaoSocial">Raxão Social</label>
                         </div>
                         <div className="form-floating mb-3">
-                            <input type="text" className="form-control-plaintext" id="uf" placeholder="E-mail" value={fornecedor.uf} onChange={() => { }} />
+                            <input type="text" className="form-control-plaintext" id="uf" placeholder="UF" value={fornecedor.uf} onChange={() => { }} />
                             <label htmlFor="uf">UF</label>
                         </div>
                         <div className="form-floating mb-3">
-                            <input type="text" className="form-control-plaintext" id="nomeContato" placeholder="E-mail" value={fornecedor.nomeContato} onChange={() => { }} />
+                            <input type="text" className="form-control-plaintext" id="nomeContato" placeholder="Nome do contato" value={fornecedor.nomeContato} onChange={() => { }} />
                             <label htmlFor="nomeContato">Nome Contato</label>
                         </div>
                         <div className="form-floating mb-3">
-                            <input type="text" className="form-control-plaintext" id="nomeContato" placeholder="E-mail" value={fornecedor.nomeContato} onChange={() => { }} />
-                            <label htmlFor="nomeContato">E-mail Contato</label>
+                            <input type="text" className="form-control-plaintext" id="emailContato" placeholder="E-mail do contato" value={fornecedor.emailContato} onChange={() => { }} />
+                            <label htmlFor="emailContato">E-mail Contato</label>
                         </div>
                         <br />
                     </div>
