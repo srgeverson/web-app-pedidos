@@ -16,6 +16,9 @@ Além disto é bom ter um editor para trabalhar com o código como [VSCode](http
 # Instalar o react e o next [React JS](https://reactjs.org/docs/create-a-new-react-app.html#gatsby-focus-wrapper).
 $ npx create-react-app web-app-pedidos
 
+# Deploy GitHub Pages
+$ npm install --save-dev gh-pages
+
 # Instala o gerenciador de rotas [Router DOM](https://v5.reactrouter.com/web/guides/quick-start).
 $ npm install react-router-dom --save
 
@@ -25,9 +28,6 @@ $ npm install history --save
 # Instalar o Bootstrap utilizando reactstrap: https://reactstrap.github.io/
 $ npm install bootstrap --save
 $ npm install reactstrap --save
-
-# Redux compartilha estados entre componentes
-$ npm install redux react-redux redux-thunk --save
 
 # Realizar chamada para API
 $ npm install axios --save
@@ -39,13 +39,9 @@ $ npm install dotenv --save
 $ touch .ENV
 
 # Crie as variáveis de ambiente iniciais como mostra a seguir:
-$ PUBLIC_URL='URL da aplicação em produção.'
-$ PORT='Porta da aplicação em produção.'
-$ SERVER_URL='URL da API.'
-$ SERVER_PORT='Porta da API.'
-
-# Deploy GitHub Pages
-$ npm install --save-dev gh-pages
+$ echo "PUBLIC_URL=URL_DA_APLICACAO_AQUI" >> .ENV
+$ echo "SERVER_URL=URL_DA_API_AQUI" >> .ENV
+$ echo "SERVER_PORT=PORTA_DA_API_AQUI" >> .ENV
 
 # Rodar o projeto
 $ npm start
