@@ -16,7 +16,7 @@ class UsuarioService {
 
     async apagarPorId(id) {
         return await api()
-            .delete(`/fornecedor/por-cnpj?cnpj=${id}`)
+            .delete(`/fornecedor/apagar?id=${id}`)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
             })
