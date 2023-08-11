@@ -6,17 +6,13 @@ const url = 'https://webapipedidos.azurewebsites.net';//process.env.SERVER_URL ?
 const url_api = process.env.SERVER_URL ? process.env.SERVER_URL : `${url}:${port}/v1`;
 
 const api = () => {
-    // console.log(port);
-    console.log(url_api);
-    // console.log(url);
-    // console.log(process.env);
-    // let url_temp = 'https://webapipedidos.azurewebsites.net/v1';
     return axios.create({
         baseURL: url_api,
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json;charset=utf-8',
-            'Access-Control-Allow-Origin': '*'
+            'Access-Control-Allow-Origin': 'http://localhost:1433/',
+            'Access-Control-Allow-Credentials': 'true'
         }
     });
 }

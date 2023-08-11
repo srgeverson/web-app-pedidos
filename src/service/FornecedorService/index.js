@@ -1,42 +1,49 @@
 import { api } from '../../core/Api';
 import errorHandler from '../../core/handler/Exception';
-const axios = require('axios');
+
 class UsuarioService {
 
-    constructor() {
-        this.token = localStorage.getItem('token');
-    }
-    
     async alterar(id, dados) {
-        return await api(this.token)
-            .put(`/fornecedores/id/${id}`, dados)
+        return await api()
+            .put(`/fornecedores/atualizar?cnpj=${id}`, dados)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
             })
             .catch((callbackError) => {
-               return errorHandler(callbackError.response);
+                return errorHandler(callbackError.response);
+            });
+    }
+
+    async apagarPorId(id) {
+        return await api()
+            .delete(`/fornecedor/por-cnpj?cnpj=${id}`)
+            .then((callbackSuccess) => {
+                return callbackSuccess.data;
+            })
+            .catch((callbackError) => {
+                return errorHandler(callbackError.response);
             });
     }
 
     async buscarPorId(id) {
-        return await api(this.token)
-            .get(`/fornecedores/${id}`)
+        return await api()
+            .get(`/fornecedor/por-cnpj?cnpj=${id}`)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
             })
             .catch((callbackError) => {
-               return errorHandler(callbackError.response);
+                return errorHandler(callbackError.response);
             });
     }
 
     async cadastrar(dados) {
-        return await api(this.token)
-            .post(`/fornecedores/com-senha`, dados)
+        return await api()
+            .post(`/fornecedor/cadastrar`, dados)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
             })
             .catch((callbackError) => {
-               return errorHandler(callbackError.response);
+                return errorHandler(callbackError.response);
             });
     }
 
@@ -48,28 +55,8 @@ class UsuarioService {
             })
             .catch((callbackError) => {
                 console.log(callbackError);
-               return errorHandler(callbackError.response);
+                return errorHandler(callbackError.response);
             });
-    }
-    async teste(){
-       
-
-let config = {
-  method: 'get',
-  maxBodyLength: Infinity,
-  url: 'https://webapipedidos.azurewebsites.net/v1/fornecedor/todos',
-  headers: { 
-    'Cookie': 'ARRAffinity=a6e48b9e9d2653435be7b61998d8624b44115214104213d6c8b8c526cc56dc70; ARRAffinitySameSite=a6e48b9e9d2653435be7b61998d8624b44115214104213d6c8b8c526cc56dc70'
-  }
-};
-
-axios.request(config)
-.then((response) => {
-  console.log(JSON.stringify(response.data));
-})
-.catch((error) => {
-  console.log(error);
-});
     }
 }
 

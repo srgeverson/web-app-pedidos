@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { DropdownMenu, DropdownToggle, FormGroup, UncontrolledButtonDropdown } from 'reactstrap';
-import { publicURL } from '../../../core/Config';
+import { publicURL, rotas } from '../../../core/Config';
 import AlertaErro from '../../components/AlertaErro';
 import AlertaAtencao from '../../components/AlertaAtencao';
 import AlertaSucesso from '../../components/AlertaSucesso';
@@ -16,7 +16,7 @@ const Fornecedor = () => {
     const [sucesso, setSucesso] = useState('');
     const [erro, setErro] = useState('');
     const [aguardando, setAguardando] = useState(false);
-    const [usuarios, setFornecedores] = useState([]);
+    const [fornecedores, setFornecedores] = useState([]);
     const location = useLocation();
     const fornecedorService = new FornecedorService();
 
@@ -32,7 +32,6 @@ const Fornecedor = () => {
         // eslint-disable-next-line
     }, []);
 
-    //Início da rotina de pesquisa
     const pesquisarFornecedores = async () => {
         setAguardando(true);
         const listarTodos = await fornecedorService.listarTodos();
@@ -70,33 +69,36 @@ const Fornecedor = () => {
                 </div>
                 <div className="col-sm-2">
                     <FormGroup>
-                        <BotaoCadastrar uri={`${publicURL}/usuarios-cadastrar`} descricaoObjeto='Fornecedor' />
+                        <BotaoCadastrar uri={`${publicURL}${rotas.cadastroDeFornecedor}`} descricaoObjeto='Fornecedor' />
                     </FormGroup>
                 </div>
             </div>
             <div className="table-responsive">
-                <ModalCarregando isOpen={usuarios && aguardando} pagina='Processando solicitação' />
+                <ModalCarregando isOpen={fornecedores && aguardando} pagina='Processando solicitação' />
                 <table className="table table-hover table-striped">
                     <thead>
                         <tr>
                             <th className="d-none d-sm-table-cell">CNPJ</th>
                             <th>Razão Social</th>
-                            <th className="d-none d-sm-table-cell">E-mail Contato</th>
+                            <th>UF</th>
                             <th className="d-none d-sm-table-cell">Nome Contato</th>
+                            <th className="d-none d-sm-table-cell">E-mail Contato</th>
                             <th className="text-center">Opções</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            usuarios.map(
-                                (usuario) => (
-                                    <tr key={usuario.id} >
-                                        <th className="d-none d-sm-table-cell">{usuario.id}</th>
-                                        <th>{usuario.nome}</th>
-                                        <td className="d-none d-sm-table-cell">{usuario.email}</td>
+                            fornecedores.map(
+                                (fornecedor) => (
+                                    <tr key={fornecedor.cnpj} >
+                                        <th className="d-none d-sm-table-cell">{fornecedor.cnpj}</th>
+                                        <th>{fornecedor.razaoSocial}</th>
+                                        <td className="d-none d-sm-table-cell">{fornecedor.uf}</td>
+                                        <td className="d-none d-sm-table-cell">{fornecedor.nomeContato}</td>
+                                        <td className="d-none d-sm-table-cell">{fornecedor.emailContato}</td>
                                         <td className="text-center">
                                             <span className="d-none d-md-block">
-                                                <BotaoEditar uri={`${publicURL}/usuarios-alterar/${usuario.id}`} />
+                                                <BotaoEditar uri={`${publicURL}${rotas.alteracaoDeFornecedor}${fornecedor.cnpj}`} />
                                             </span>
                                             <div className="dropdown d-block d-md-none">
                                                 <UncontrolledButtonDropdown>
@@ -104,7 +106,7 @@ const Fornecedor = () => {
                                                         {/* <MoreVertIcon /> */}
                                                     </DropdownToggle>
                                                     <DropdownMenu>
-                                                        <BotaoEditar uri={`${publicURL}/usuarios-alterar/${usuario.id}`} />
+                                                        <BotaoEditar uri={`${publicURL}${rotas.alteracaoDeFornecedor}${fornecedor.cnpj}`} />
                                                     </DropdownMenu>
                                                 </UncontrolledButtonDropdown>
 
