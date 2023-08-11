@@ -24,12 +24,12 @@ body {
 .sidebar ul li a:hover,
 .sidebar ul .active a {
     color: #ecedee;
-    background-color: #354358;
+    background-color: #96999c;
 }
 
 .sidebar ul ul a {
     padding-left: 2.5rem;
-    background-color: #1e2835;
+    background-color: #233955;
 }
 
 /*Seletor utilizado para ativar o botão ocultar menu em PC*/
