@@ -5,7 +5,7 @@ class UsuarioService {
 
     async alterar(id, dados) {
         return await api()
-            .put(`/fornecedores/atualizar?cnpj=${id}`, dados)
+            .put(`/fornecedor/atualizar?cnpj=${id}`, dados)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
             })
@@ -16,7 +16,7 @@ class UsuarioService {
 
     async apagarPorId(id) {
         return await api()
-            .delete(`/fornecedor/por-cnpj?cnpj=${id}`)
+            .delete(`/fornecedor/apagar?id=${id}`)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
             })

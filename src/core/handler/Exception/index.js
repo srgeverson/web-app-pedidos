@@ -1,7 +1,8 @@
 const errorHandler = (erro) => {
-    if (erro && erro.data && erro.data.statusCode)
+    console.log(erro.data);
+    if (erro && erro.data && erro.data.codigo)
         return erro.data;
     else
-        return { statusCode: 500, message: "Ocorreu um erro interno no servidor, contate o administrador do sistema!" }
+        return { codigo: 500, mensagem: "Ocorreu um erro interno no servidor, contate o administrador do sistema!", descricao: "Falha na operação" }
 }
 export default errorHandler;

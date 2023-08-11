@@ -5,9 +5,11 @@ import { publicURL, rotas } from '../../../core/Config';
 import AlertaErro from '../../components/AlertaErro';
 import AlertaAtencao from '../../components/AlertaAtencao';
 import AlertaSucesso from '../../components/AlertaSucesso';
+import BotaoExcluir from '../../components/BotaoExcluir';
 import BotaoCadastrar from '../../components/BotaoCadastrar';
 import BotaoEditar from '../../components/BotaoEditar';
 import BotaoPesquisar from '../../components/BotaoPesquisar';
+import ModalApagar from '../../components/ModalApagar';
 import ModalCarregando from '../../components/ModalCarregando';
 import FornecedorService from '../../../service/FornecedorService';
 
@@ -17,6 +19,8 @@ const Fornecedor = () => {
     const [erro, setErro] = useState('');
     const [aguardando, setAguardando] = useState(false);
     const [fornecedores, setFornecedores] = useState([]);
+    const [idParaApagar, setIdParaApagar] = useState('');
+    const [confirmarExclusao, setConfirmarExclusao] = useState(false);
     const location = useLocation();
     const fornecedorService = new FornecedorService();
 
@@ -35,17 +39,43 @@ const Fornecedor = () => {
     const pesquisarFornecedores = async () => {
         setAguardando(true);
         const listarTodos = await fornecedorService.listarTodos();
-        if (listarTodos.statusCode) {
-            if (listarTodos.statusCode === 500) {
+        if (listarTodos.codigo) {
+            if (listarTodos.codigo === 500) {
                 setAtencao('');
-                setErro({ mensagem: listarTodos.message });
+                setErro({ mensagem: listarTodos.mensagem });
             } else {
                 setErro('');
-                setAtencao({ mensagem: listarTodos.message });
+                setAtencao({ mensagem: listarTodos.descricao });
             }
         } else
             setFornecedores(listarTodos);
         setAguardando(false);
+    }
+
+    const apagarFornecedor = async () => {
+        setAguardando(true);
+        const apagar = await fornecedorService.apagarPorId(idParaApagar);
+        if (apagar.codigo) {
+            if (apagar.codigo === 500) {
+                setAtencao('');
+                setSucesso('');
+                setErro({ mensagem: apagar.mensagem });
+            } else {
+                setErro('');
+                setSucesso('');
+                setAtencao({ mensagem: apagar.descricao });
+            }
+        } else {
+            setSucesso({ mensagem: 'Sucesso!' });
+            setConfirmarExclusao(false);
+            pesquisarFornecedores();
+        }
+        setAguardando(false);
+    }
+
+    const abrirConfirmarExclusao = (id) => {
+        setConfirmarExclusao(true);
+        setIdParaApagar(id);
     }
 
     return (
@@ -74,6 +104,7 @@ const Fornecedor = () => {
                 </div>
             </div>
             <div className="table-responsive">
+                <ModalApagar isOpen={confirmarExclusao} toogle={() => setConfirmarExclusao(false)} apagar='Fornecedor' aguardando={aguardando} apagarObjeto={() => apagarFornecedor()} />
                 <ModalCarregando isOpen={fornecedores && aguardando} pagina='Processando solicitação' />
                 <table className="table table-hover table-striped">
                     <thead>
@@ -99,20 +130,18 @@ const Fornecedor = () => {
                                         <td className="text-center">
                                             <span className="d-none d-md-block">
                                                 <BotaoEditar uri={`${publicURL}${rotas.alteracaoDeFornecedor}${fornecedor.cnpj}`} />
+                                                <BotaoExcluir onClick={() => abrirConfirmarExclusao(fornecedor.cnpj)} />
                                             </span>
                                             <div className="dropdown d-block d-md-none">
                                                 <UncontrolledButtonDropdown>
                                                     <DropdownToggle outline size="sm">
-                                                        {/* <MoreVertIcon /> */}
+                                                        Mais
                                                     </DropdownToggle>
                                                     <DropdownMenu>
                                                         <BotaoEditar uri={`${publicURL}${rotas.alteracaoDeFornecedor}${fornecedor.cnpj}`} />
+                                                        <BotaoExcluir onClick={() => abrirConfirmarExclusao(fornecedor.cnpj)} />
                                                     </DropdownMenu>
                                                 </UncontrolledButtonDropdown>
-
-                                                <div className="dropdown-menu dropdown-menu-right" aria-labelledby="acoesListar">
-
-                                                </div>
                                             </div>
                                         </td>
                                     </tr>
