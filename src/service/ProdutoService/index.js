@@ -5,7 +5,7 @@ class ProdutoService {
 
     async alterar(id, dados) {
         return await api()
-            .put(`/produto/atualizar?cnpj=${id}`, dados)
+            .put(`/produto/atualizar?codigo=${id}`, dados)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
             })
@@ -27,7 +27,7 @@ class ProdutoService {
 
     async buscarPorId(id) {
         return await api()
-            .get(`/produto/por-cnpj?cnpj=${id}`)
+            .get(`/produto/por-codigo?codigo=${id}`)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
             })
