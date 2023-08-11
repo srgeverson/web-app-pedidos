@@ -29,8 +29,8 @@ const Visualizar = () => {
     const getUsuario = async (id) => {
         setAguardando(true);
         const usuarioPorId = await fornecedorService.buscarPorId(id);
-        if (usuarioPorId.codigo) {
-            if (usuarioPorId.codigo === 500) {
+        if (usuarioPorId.statusCode) {
+            if (usuarioPorId.statusCode === 500) {
                 setAtencao('');
                 setErro({ mensagem: usuarioPorId.message });
             } else {

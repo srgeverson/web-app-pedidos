@@ -61,8 +61,8 @@ const Alterar = () => {
         setAguardando(true);
         const fornecedorAlterado = await fornecedorService.alterar(id, {cnpj:id, razaoSocial, nomeContato, emailContato, uf });
 
-        if (fornecedorAlterado.codigo) {
-            if (fornecedorAlterado.codigo === 500) {
+        if (fornecedorAlterado.statusCode) {
+            if (fornecedorAlterado.statusCode === 500) {
                 setAtencao('');
                 setErro({ mensagem: fornecedorAlterado.mensagem });
             } else {
