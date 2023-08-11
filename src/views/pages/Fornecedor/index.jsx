@@ -5,6 +5,7 @@ import { publicURL, rotas } from '../../../core/Config';
 import AlertaErro from '../../components/AlertaErro';
 import AlertaAtencao from '../../components/AlertaAtencao';
 import AlertaSucesso from '../../components/AlertaSucesso';
+import BotaoApagar from '../../components/BotaoApagar';
 import BotaoCadastrar from '../../components/BotaoCadastrar';
 import BotaoEditar from '../../components/BotaoEditar';
 import BotaoPesquisar from '../../components/BotaoPesquisar';
@@ -99,20 +100,17 @@ const Fornecedor = () => {
                                         <td className="text-center">
                                             <span className="d-none d-md-block">
                                                 <BotaoEditar uri={`${publicURL}${rotas.alteracaoDeFornecedor}${fornecedor.cnpj}`} />
+                                                <BotaoApagar uri={`${publicURL}${rotas.alteracaoDeFornecedor}${fornecedor.cnpj}`} />
                                             </span>
                                             <div className="dropdown d-block d-md-none">
                                                 <UncontrolledButtonDropdown>
                                                     <DropdownToggle outline size="sm">
-                                                        {/* <MoreVertIcon /> */}
+                                                        Mais
                                                     </DropdownToggle>
                                                     <DropdownMenu>
                                                         <BotaoEditar uri={`${publicURL}${rotas.alteracaoDeFornecedor}${fornecedor.cnpj}`} />
                                                     </DropdownMenu>
                                                 </UncontrolledButtonDropdown>
-
-                                                <div className="dropdown-menu dropdown-menu-right" aria-labelledby="acoesListar">
-
-                                                </div>
                                             </div>
                                         </td>
                                     </tr>

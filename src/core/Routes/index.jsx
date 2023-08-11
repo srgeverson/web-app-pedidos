@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { publicURL, rotas } from '../Config';
 import Container from '../Container';
 import Fornecedor from '../../views/pages/Fornecedor';
+import CriarFornecedor from '../../views/pages/Fornecedor/Criar';
 import Home from '../../views/pages/Home';
 import PaginaInexistente from '../../views/pages/PaginaInexistente';
 import Pedido from '../../views/pages/Pedido';
@@ -13,6 +14,7 @@ const Rotas = () => {
         <BrowserRouter>
             <Fragment>
                 <Routes>
+                    <Route path={`${publicURL}${rotas.cadastroDeFornecedor}`} element={Container(CriarFornecedor)} />
                     <Route path={`${publicURL}${rotas.listaDeFornecedores}`} element={Container(Fornecedor)} />
                     <Route path={`${publicURL}${rotas.paginaInicial}`} element={Container(Home)} />
                     <Route path={`${publicURL}${rotas.listaDePedidos}`} element={Container(Pedido)} />
