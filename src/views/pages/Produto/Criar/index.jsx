@@ -19,7 +19,7 @@ const Criar = () => {
     const [formularioSucesso, setFormularioSucesso] = useState(false);
     const produtoService = new ProdutoService();
 
-    const cadastrarFornecedor = async () => {
+    const cadastrarProduto = async () => {
         setErro('');
 
         if (!criticas())
@@ -96,7 +96,7 @@ const Criar = () => {
                         onChange={(ev) => setValor(ev.target.value)} />
                 </FormGroup>
                 <br />
-                <Link onClick={() => cadastrarFornecedor()} to="#">
+                <Link onClick={() => cadastrarProduto()} to="#">
                     <BotaoConfirmar aguardando={aguardando} />
                 </Link>
             </Form>
