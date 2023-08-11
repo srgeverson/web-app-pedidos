@@ -1,14 +1,13 @@
 {
   "files": {
     "main.css": "/web-app-pedidos/static/css/main.192ef4c8.css",
-    "main.js": "/web-app-pedidos/static/js/main.2a8fb50f.js",
-    "static/media/axios.cjs": "/web-app-pedidos/static/media/axios.e7d77f0967a69d31d7fc.cjs",
+    "main.js": "/web-app-pedidos/static/js/main.b5b9c178.js",
     "index.html": "/web-app-pedidos/index.html",
     "main.192ef4c8.css.map": "/web-app-pedidos/static/css/main.192ef4c8.css.map",
-    "main.2a8fb50f.js.map": "/web-app-pedidos/static/js/main.2a8fb50f.js.map"
+    "main.b5b9c178.js.map": "/web-app-pedidos/static/js/main.b5b9c178.js.map"
   },
   "entrypoints": [
     "static/css/main.192ef4c8.css",
-    "static/js/main.2a8fb50f.js"
+    "static/js/main.b5b9c178.js"
   ]
 }
