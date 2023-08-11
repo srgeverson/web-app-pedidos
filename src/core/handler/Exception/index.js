@@ -1,4 +1,5 @@
 const errorHandler = (erro) => {
+    console.log(erro.data);
     if (erro && erro.data && erro.data.codigo)
         return erro.data;
     else

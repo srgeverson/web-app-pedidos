@@ -109,6 +109,7 @@ const Fornecedor = () => {
                                                     </DropdownToggle>
                                                     <DropdownMenu>
                                                         <BotaoEditar uri={`${publicURL}${rotas.alteracaoDeFornecedor}${fornecedor.cnpj}`} />
+                                                        <BotaoApagar uri={`${publicURL}${rotas.alteracaoDeFornecedor}${fornecedor.cnpj}`} />
                                                     </DropdownMenu>
                                                 </UncontrolledButtonDropdown>
                                             </div>
