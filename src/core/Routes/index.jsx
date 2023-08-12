@@ -33,7 +33,7 @@ const Rotas = () => {
                     <Route path={`${publicURL}${rotas.listaDeProdutos}`} element={Container(Produto)} />
                     <Route path={`${publicURL}${rotas.paginaInicial}`} element={Container(Home)} />
                     <Route path={`${publicURL}${rotas.visualizacaoDeFornecedor}:id`} element={Container(VisualizarFornecedor)} />
-                    <Route path={`${publicURL}${rotas.visualizacaoDePedido}:id`} element={Container(VisualizarPedido)} />
+                    <Route path={`${publicURL}${rotas.visualizacaoDePedidoes}:id`} element={Container(VisualizarPedido)} />
                     <Route path={`${publicURL}${rotas.visualizacaoDeProduto}:id`} element={Container(VisualizarProduto)} />
                     <Route path={rotas.paginaDesconhecida} element={<PaginaInexistente />} />
                 </Routes>
