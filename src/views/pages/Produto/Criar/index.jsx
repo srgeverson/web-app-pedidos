@@ -27,7 +27,6 @@ const Criar = () => {
 
         setAguardando(true);
         const usuarioCadastrado = await produtoService.cadastrar({ descricao, valor });
-        console.log(usuarioCadastrado);
         if (usuarioCadastrado.statusCode) {
             if (usuarioCadastrado.statusCode === 500) {
                 setAtencao('');

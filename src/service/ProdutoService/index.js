@@ -54,7 +54,6 @@ class ProdutoService {
                 return callbackSuccess.data;
             })
             .catch((callbackError) => {
-                console.log(callbackError);
                 return errorHandler(callbackError.response);
             });
     }
