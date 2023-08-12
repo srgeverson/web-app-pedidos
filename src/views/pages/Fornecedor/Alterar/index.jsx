@@ -98,7 +98,7 @@ const Alterar = () => {
                     <h2 className="display-4 titulo">Atualizar Fornecedor</h2>
                 </div>
                 <div className="mr-auto p-2">
-                    <Link to={`${publicURL}${rotas.visualizacaoDeFornecedores}${id}`}>
+                    <Link to={`${publicURL}${rotas.visualizacaoDeFornecedor}${id}`}>
                         <button className="ml-1 btn btn-outline-info btn-sm">
                             Visualisar
                         </button>
