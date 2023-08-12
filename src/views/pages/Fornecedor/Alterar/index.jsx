@@ -144,7 +144,8 @@ const Alterar = () => {
                         className="form-select form-select-lg mb-3"
                         aria-label="Large select example" 
                         placeholder="Selecione uma UF"
-                        onChange={(ev) => setUf(ev.target.value)}>
+                        onChange={(ev) => setUf(ev.target.value)}
+                        value={uf}>
                         <option key={''}></option>
                         {ufs.map(
                             (uf) => (
