@@ -84,7 +84,7 @@ const Pedido = () => {
         <div>
             <div className="d-flex justify-content-between">
                 <div className="mr-auto p-2">
-                    <h2 className="display-4 titulo">Pedido</h2>
+                    <h2 className="display-4 titulo">Pedidos</h2>
                 </div>
                 <div className="mr-auto p-2">
                     <AlertaErro erro={erro} />
