@@ -16,7 +16,7 @@ class PedidoService {
 
     async apagarPorId(id) {
         return await api()
-            .delete(`/pedido/apagar?codigo=${id}`)
+            .delete(`/pedido/apagar?codigoPedido=${id}`)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
             })
@@ -27,7 +27,7 @@ class PedidoService {
 
     async buscarPorId(id) {
         return await api()
-            .get(`/pedido/por-codigo?codigo=${id}`)
+            .get(`/pedido/por-id?codigoPedido=${id}`)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
             })
@@ -77,6 +77,24 @@ class PedidoService {
             }
         });
     }
+
+    async montaResumoDeUmPedido(pedido = []) {
+            let quantidadeTotalDeItensInicial = 0;
+            let valorTotalPedidoInicial = 0;
+            return {
+                codigoPedido: pedido.codigoPedido,
+                quantidadeTotalDeItens: pedido.itens.reduce(
+                    (acumulador, valorAtual) => acumulador + valorAtual.quantidadeProduto,
+                    quantidadeTotalDeItensInicial,
+                ),
+                dataPedido: pedido.itens[0].dataPedido,
+                valorTotalPedido: pedido.itens.reduce(
+                    (acumulador, valorAtual) => acumulador + valorAtual.valorPedido,
+                    valorTotalPedidoInicial,
+                )
+            }
+    }
+
 }
 
 export default PedidoService;
