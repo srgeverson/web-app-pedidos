@@ -2,7 +2,7 @@
 
 ### Pré-requisitos
 
-💡Para que esta aplicação depende da [api_node](https://github.com/srgeverson/api_node) rodando, então siga os passos contidos no README.
+💡Para que esta aplicação utiliza a API [WebAPIPedidos](https://github.com/srgeverson/WebAPIPedidos) onde a mesma está publicada [WebAPIPedidos](https://webapipedidos.azurewebsites.net/swagger/index.html).
 
 Antes de começar, você vai precisar ter instalado em sua máquina as seguintes ferramentas:
 [Git](https://git-scm.com) e [Node.js](https://nodejs.org/en/)). 
