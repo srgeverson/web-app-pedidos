@@ -109,9 +109,9 @@ const Fornecedor = () => {
                 <table className="table table-hover table-striped">
                     <thead>
                         <tr>
-                            <th className="d-none d-sm-table-cell">CNPJ</th>
+                            <th>CNPJ</th>
                             <th>Razão Social</th>
-                            <th>UF</th>
+                            <th className="d-none d-sm-table-cell">UF</th>
                             <th className="d-none d-sm-table-cell">Nome Contato</th>
                             <th className="d-none d-sm-table-cell">E-mail Contato</th>
                             <th className="text-center">Opções</th>
@@ -122,7 +122,7 @@ const Fornecedor = () => {
                             fornecedores.map(
                                 (fornecedor) => (
                                     <tr key={fornecedor.cnpj} >
-                                        <th className="d-none d-sm-table-cell">{fornecedor.cnpj}</th>
+                                        <th>{fornecedor.cnpj}</th>
                                         <th>{fornecedor.razaoSocial}</th>
                                         <td className="d-none d-sm-table-cell">{fornecedor.uf}</td>
                                         <td className="d-none d-sm-table-cell">{fornecedor.nomeContato}</td>

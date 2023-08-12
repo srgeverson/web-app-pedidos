@@ -1,8 +1,8 @@
 
 import axios from 'axios';
 
-const port = 443;//process.env.SERVER_PORT ? process.env.SERVER_PORT : 44370;
-const url = 'https://webapipedidos.azurewebsites.net';//process.env.SERVER_URL ? process.env.SERVER_URL : `https://localhost`;
+const port = 443;
+const url = 'https://webapipedidos.azurewebsites.net';
 const url_api = process.env.SERVER_URL ? process.env.SERVER_URL : `${url}:${port}/v1`;
 
 const api = () => {

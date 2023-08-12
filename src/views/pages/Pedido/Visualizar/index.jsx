@@ -129,7 +129,7 @@ const Alterar = () => {
                     <thead>
                         <tr>
                             <th>Código</th>
-                            <th className="d-none d-sm-table-cell">Valor Uni.</th>
+                            <th>Valor Uni.</th>
                             <th className="d-none d-sm-table-cell">Quantidade de Itens</th>
                             <th className="d-none d-sm-table-cell">CNPJ</th>
                             <th>Valor Total</th>
@@ -140,11 +140,11 @@ const Alterar = () => {
                             itens.map(
                                 (item) => (
                                     <tr key={item.produto} >
-                                        <th className="d-none d-sm-table-cell">{item.produto}</th>
+                                        <th>{item.produto}</th>
                                         <th>{formataMoeda(item.valorPedido / item.quantidadeProduto)}</th>
-                                        <th>{item.quantidadeProduto}</th>
-                                        <th>{item.fornecedor}</th>
-                                        <td className="d-none d-sm-table-cell">{formataMoeda(item.valorPedido)}</td>
+                                        <th className="d-none d-sm-table-cell">{item.quantidadeProduto}</th>
+                                        <th className="d-none d-sm-table-cell">{item.fornecedor}</th>
+                                        <td >{formataMoeda(item.valorPedido)}</td>
                                     </tr>
                                 )
                             )

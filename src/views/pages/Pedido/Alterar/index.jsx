@@ -308,9 +308,9 @@ const Alterar = () => {
                         <tr>
                             <th>Código</th>
                             <th className="d-none d-sm-table-cell">Valor Uni.</th>
-                            <th className="d-none d-sm-table-cell">Quantidade de Itens</th>
+                            <th>Quantidade de Itens</th>
                             <th className="d-none d-sm-table-cell">CNPJ</th>
-                            <th>Valor Total</th>
+                            <th>Subtotal</th>
                             <th>Operações</th>
                         </tr>
                     </thead>
@@ -319,11 +319,11 @@ const Alterar = () => {
                             itens.map(
                                 (item) => (
                                     <tr key={item.produto} >
-                                        <th className="d-none d-sm-table-cell">{item.produto}</th>
-                                        <th>{formataMoeda(item.valor)}</th>
+                                        <th>{item.produto}</th>
+                                        <th className="d-none d-sm-table-cell">{formataMoeda(item.valor)}</th>
                                         <th>{item.quantidadeProduto}</th>
-                                        <th>{item.fornecedor}</th>
-                                        <td className="d-none d-sm-table-cell">{formataMoeda(item.quantidadeProduto * item.valor)}</td>
+                                        <th className="d-none d-sm-table-cell">{item.fornecedor}</th>
+                                        <td>{formataMoeda(item.quantidadeProduto * item.valor)}</td>
                                         <td className="text-center">
                                             <span className="d-none d-md-block">
                                                 <BotaoExcluir onClick={() => abrirConfirmarExclusao(item.codigoPedido, item.fornecedor, item.produto)} />
