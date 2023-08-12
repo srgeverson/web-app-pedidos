@@ -5,7 +5,7 @@ class PedidoService {
 
     async alterar(id, dados) {
         return await api()
-            .put(`/pedido/atualizar?codigo=${id}`, dados)
+            .put(`/pedido/atualizar?codigoPedido=${id}`, {pedidoRequests:dados})
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
             })
@@ -17,6 +17,17 @@ class PedidoService {
     async apagarPorId(id) {
         return await api()
             .delete(`/pedido/apagar?codigoPedido=${id}`)
+            .then((callbackSuccess) => {
+                return callbackSuccess.data;
+            })
+            .catch((callbackError) => {
+                return errorHandler(callbackError.response);
+            });
+    }
+
+    async apagarPorIdPedido(codigoPedido, fornecedor, produto) {
+        return await api()
+            .delete(`/pedido/apagar?codigoPedido=${codigoPedido}&fornecedor=${fornecedor}&produto=${produto}`)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
             })
@@ -54,7 +65,6 @@ class PedidoService {
                 return callbackSuccess.data;
             })
             .catch((callbackError) => {
-                console.log(callbackError);
                 return errorHandler(callbackError.response);
             });
     }
