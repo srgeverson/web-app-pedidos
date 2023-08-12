@@ -19,7 +19,7 @@ const Criar = () => {
     const [formularioSucesso, setFormularioSucesso] = useState(false);
     const produtoService = new ProdutoService();
 
-    const cadastrarFornecedor = async () => {
+    const cadastrarProduto = async () => {
         setErro('');
 
         if (!criticas())
@@ -27,7 +27,6 @@ const Criar = () => {
 
         setAguardando(true);
         const usuarioCadastrado = await produtoService.cadastrar({ descricao, valor });
-        console.log(usuarioCadastrado);
         if (usuarioCadastrado.statusCode) {
             if (usuarioCadastrado.statusCode === 500) {
                 setAtencao('');
@@ -96,7 +95,7 @@ const Criar = () => {
                         onChange={(ev) => setValor(ev.target.value)} />
                 </FormGroup>
                 <br />
-                <Link onClick={() => cadastrarFornecedor()} to="#">
+                <Link onClick={() => cadastrarProduto()} to="#">
                     <BotaoConfirmar aguardando={aguardando} />
                 </Link>
             </Form>
