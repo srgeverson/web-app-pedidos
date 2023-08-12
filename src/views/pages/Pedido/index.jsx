@@ -84,7 +84,7 @@ const Pedido = () => {
         <div>
             <div className="d-flex justify-content-between">
                 <div className="mr-auto p-2">
-                    <h2 className="display-4 titulo">Pedido</h2>
+                    <h2 className="display-4 titulo">Pedidos</h2>
                 </div>
                 <div className="mr-auto p-2">
                     <AlertaErro erro={erro} />
@@ -112,8 +112,8 @@ const Pedido = () => {
                     <thead>
                         <tr>
                             <th>Código</th>
-                            <th className="d-none d-sm-table-cell">Quantidade de Itens</th>
-                            <th>Valor Total</th>
+                            <th>Quantidade</th>
+                            <th>Subtotal</th>
                             <th className="d-none d-sm-table-cell">Data Pedido</th>
                             <th className="text-center">Opções</th>
                         </tr>
@@ -123,10 +123,10 @@ const Pedido = () => {
                             pedidos.map(
                                 (pedido) => (
                                     <tr key={pedido.codigoPedido} >
-                                        <th className="d-none d-sm-table-cell">{pedido.codigoPedido}</th>
+                                        <th>{pedido.codigoPedido}</th>
                                         <th>{pedido.quantidadeTotalDeItens}</th>
-                                        <td className="d-none d-sm-table-cell">{formataMoeda(pedido.valorTotalPedido)}</td>
-                                        <td>{formataDataEHora(pedido.dataPedido)}</td>
+                                        <td>{formataMoeda(pedido.valorTotalPedido)}</td>
+                                        <td className="d-none d-sm-table-cell">{formataDataEHora(pedido.dataPedido)}</td>
                                         <td className="text-center">
                                             <span className="d-none d-md-block">
                                                 <BotaoEditar uri={`${publicURL}${rotas.alteracaoDePedido}${pedido.codigoPedido}`} />

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Tooltip } from 'reactstrap';
 import { Link } from 'react-router-dom';
-// import AddIcon from '@mui/icons-material/Add';
 
 const BotaoCadastrar = (props) => {
     const [tooltipOpen, setTooltipOpen] = useState(false);
@@ -9,7 +8,6 @@ const BotaoCadastrar = (props) => {
     return (
         <>
             <Link id="idCadastrar" to={props.uri} className="btn btn-primary btn-sm">
-                {/* <AddIcon /> */}
                 <span className="text-white"> Cadastrar</span>
             </Link>
             <Tooltip placement="top" isOpen={tooltipOpen} target="idCadastrar" toggle={toggle}>

@@ -223,12 +223,12 @@ const Criar = () => {
                 <table className="table table-hover table-striped">
                     <thead>
                         <tr>
-                            <th>Código</th>
-                            <th className="d-none d-sm-table-cell">Descrição</th>
-                            <th className="d-none d-sm-table-cell">Valor Uni.</th>
-                            <th className="d-none d-sm-table-cell">Quantidade de Itens</th>
+                            <th className="d-none d-sm-table-cell">Código</th>
+                            <th>Descrição</th>
+                            <th>Valor Uni.</th>
+                            <th>Quantidade de Itens</th>
                             <th className="d-none d-sm-table-cell">CNPJ</th>
-                            <th>Valor Total</th>
+                            <th>Subtotal</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -240,8 +240,8 @@ const Criar = () => {
                                         <th>{item.descricao}</th>
                                         <th>{formataMoeda(item.valor)}</th>
                                         <th>{item.quantidadeProduto}</th>
-                                        <th>{item.fornecedor}</th>
-                                        <td className="d-none d-sm-table-cell">{formataMoeda(item.quantidadeProduto * item.valor)}</td>
+                                        <th className="d-none d-sm-table-cell">{item.fornecedor}</th>
+                                        <td>{formataMoeda(item.quantidadeProduto * item.valor)}</td>
                                     </tr>
                                 )
                             )

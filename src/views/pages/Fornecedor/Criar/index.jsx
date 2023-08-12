@@ -110,7 +110,7 @@ const Criar = () => {
                         aria-label="Large select example" 
                         placeholder="Selecione uma UF"
                         onChange={(ev) => setUf(ev.target.value)}>
-                        <option></option>
+                        <option key=''></option>
                         {ufs.map(
                             (uf) => (
                                 <option value={uf}>{uf}</option>

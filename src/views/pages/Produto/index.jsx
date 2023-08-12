@@ -110,9 +110,9 @@ const Produto = () => {
                 <table className="table table-hover table-striped">
                     <thead>
                         <tr>
-                            <th className="d-none d-sm-table-cell">Código</th>
+                            <th>Código</th>
                             <th>Descrição</th>
-                            <th>Data Cadastro</th>
+                            <th className="d-none d-sm-table-cell">Data Cadastro</th>
                             <th className="d-none d-sm-table-cell">Valor</th>
                             <th className="text-center">Opções</th>
                         </tr>
@@ -122,9 +122,9 @@ const Produto = () => {
                             produtos.map(
                                 (produto) => (
                                     <tr key={produto.codigo} >
-                                        <th className="d-none d-sm-table-cell">{produto.codigo}</th>
+                                        <th>{produto.codigo}</th>
                                         <th>{produto.descricao}</th>
-                                        <td>{formataDataEHora(produto.dataCadastro)}</td>
+                                        <td className="d-none d-sm-table-cell">{formataDataEHora(produto.dataCadastro)}</td>
                                         <td className="d-none d-sm-table-cell">{formataMoeda(produto.valor)}</td>
                                         <td className="text-center">
                                             <span className="d-none d-md-block">
