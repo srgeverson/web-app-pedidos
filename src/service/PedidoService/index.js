@@ -5,7 +5,7 @@ class PedidoService {
 
     async alterar(id, dados) {
         return await api()
-            .put(`/pedido/atualizar?codigoPedido=${id}`, {pedidoRequests:dados})
+            .put(`/pedido/atualizar?codigoPedido=${id}`, { pedidoRequests: dados })
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
             })
@@ -89,20 +89,20 @@ class PedidoService {
     }
 
     async montaResumoDeUmPedido(pedido = []) {
-            let quantidadeTotalDeItensInicial = 0;
-            let valorTotalPedidoInicial = 0;
-            return {
-                codigoPedido: pedido.codigoPedido,
-                quantidadeTotalDeItens: pedido.itens.reduce(
-                    (acumulador, valorAtual) => acumulador + valorAtual.quantidadeProduto,
-                    quantidadeTotalDeItensInicial,
-                ),
-                dataPedido: pedido.itens[0].dataPedido,
-                valorTotalPedido: pedido.itens.reduce(
-                    (acumulador, valorAtual) => acumulador + valorAtual.valorPedido,
-                    valorTotalPedidoInicial,
-                )
-            }
+        let quantidadeTotalDeItensInicial = 0;
+        let valorTotalPedidoInicial = 0;
+        return {
+            codigoPedido: pedido.codigoPedido,
+            quantidadeTotalDeItens: pedido.itens.reduce(
+                (acumulador, valorAtual) => acumulador + valorAtual.quantidadeProduto,
+                quantidadeTotalDeItensInicial,
+            ),
+            dataPedido: pedido.itens.lenght > 0 ? pedido.itens[0].dataPedido : null,
+            valorTotalPedido: pedido.itens.reduce(
+                (acumulador, valorAtual) => acumulador + valorAtual.valorPedido,
+                valorTotalPedidoInicial,
+            )
+        }
     }
 
 }

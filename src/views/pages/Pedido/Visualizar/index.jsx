@@ -2,17 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { FormGroup, Label, Input, Row, Col } from 'reactstrap';
 import { publicURL, rotas } from '../../../../core/Config';
-import AlertaErro from '../../../components/AlertaErro';
-import AlertaAtencao from '../../../components/AlertaAtencao';
+import Alerta from '../../../components/Alerta';
 import PedidoService from '../../../../service/PedidoService';
 import ModalCarregando from '../../../components/ModalCarregando';
 import { formataDataEHora, formataMoeda } from '../../../../core/Utils';
 
 const Alterar = () => {
+    const [retorno, setRertorno] = useState('');
     const [dataPedido, setDataPedido] = useState('');
     const [valorTotalPedido, setValorTotalPedido] = useState('');
-    const [atencao, setAtencao] = useState('');
-    const [erro, setErro] = useState('');
     const [aguardando, setAguardando] = useState(false);
     const [quantidadeTotalProdutos, setQuantidadeTotalProdutos] = useState('');
     const [itens, setItens] = useState([]);
@@ -26,19 +24,13 @@ const Alterar = () => {
 
     const receberDadosPedido = async () => {
         setAguardando(true);
-        const fornecedorPorId = await pedidoService.buscarPorId(id);
-        if (fornecedorPorId.statusCode) {
-            if (fornecedorPorId.statusCode === 500) {
-                setAtencao('');
-                setErro({ mensagem: fornecedorPorId.message });
-            } else {
-                setErro('');
-                setAtencao({ mensagem: fornecedorPorId.message });
-            }
-        } else {
-            if (fornecedorPorId) {
-                const resumo = await pedidoService.montaResumoDeUmPedido(fornecedorPorId);
-                setItens(fornecedorPorId.itens)
+        const pedidoPorId = await pedidoService.buscarPorId(id);
+        if (pedidoPorId.statusCode)
+            setRertorno(pedidoPorId);
+        else {
+            if (pedidoPorId) {
+                const resumo = await pedidoService.montaResumoDeUmPedido(pedidoPorId);
+                setItens(pedidoPorId.itens)
                 setDataPedido(resumo.dataPedido);
                 setValorTotalPedido(resumo.valorTotalPedido);
                 setQuantidadeTotalProdutos(resumo.quantidadeTotalDeItens);
@@ -69,8 +61,7 @@ const Alterar = () => {
                 </div>
             </div>
             <hr />
-            <AlertaErro erro={erro} />
-            <AlertaAtencao atencao={atencao} />
+            <Alerta retorno={retorno} />
             <ModalCarregando isOpen={aguardando} pagina='Processando solicitação' />
             <div className="form-group row m-0">
                 <Row className="row-cols-lg-auto g-3 align-items-center">
@@ -94,7 +85,7 @@ const Alterar = () => {
                                 value={quantidadeTotalProdutos}
                                 name="codigoPedido"
                                 id="codigoPedido"
-                                placeholder="Valor do produto"
+                                placeholder="Valor do pedido"
                                 onChange={() => { }} disabled />
                         </FormGroup>
                     </Col>
@@ -106,7 +97,7 @@ const Alterar = () => {
                                 value={formataDataEHora(dataPedido)}
                                 name="dataPedido"
                                 id="dataPedido"
-                                placeholder="Valor do produto"
+                                placeholder="Data do pedido"
                                 onChange={(ev) => setDataPedido(ev.target.value)} disabled />
                         </FormGroup>
                     </Col>

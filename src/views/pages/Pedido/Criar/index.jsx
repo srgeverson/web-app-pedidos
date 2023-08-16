@@ -4,19 +4,15 @@ import { FormGroup, Label, Input, Row, Col } from 'reactstrap';
 import { publicURL, rotas } from '../../../../core/Config';
 import BotaoConfirmar from '../../../components/BotaoConfirmar';
 import BotaoAdicionar from '../../../components/BotaoAdicionar';
-import AlertaErro from '../../../components/AlertaErro';
+import Alerta from '../../../components/Alerta';
 import PedidoService from '../../../../service/PedidoService';
 import ProdutoService from '../../../../service/ProdutoService';
 import FornecedorService from '../../../../service/FornecedorService';
-import AlertaAtencao from '../../../components/AlertaAtencao';
-import AlertaSucesso from '../../../components/AlertaSucesso';
 import ModalCarregando from '../../../components/ModalCarregando';
 import { formataMoeda } from '../../../../core/Utils';
 
 const Criar = () => {
-    const [atencao, setAtencao] = useState('');
-    const [sucesso, setSucesso] = useState('');
-    const [erro, setErro] = useState('');
+    const [retorno, setRertorno] = useState('');
     const [aguardando, setAguardando] = useState(false);
     const [formularioSucesso, setFormularioSucesso] = useState(false);
     const [produtos, setProdutos] = useState([]);
@@ -30,25 +26,15 @@ const Criar = () => {
     const fornecedorService = new FornecedorService();
 
     const cadastrarPedido = async () => {
-        setErro('');
-
         if (!criticas())
             return;
 
         setAguardando(true);
-        const usuarioCadastrado = await pedidoService.cadastrar({pedidoRequests:itens});
-        if (usuarioCadastrado.statusCode) {
-            if (usuarioCadastrado.statusCode === 500) {
-                setAtencao('');
-                setErro({ mensagem: usuarioCadastrado.descricao });
-            } else {
-                setErro('');
-                setAtencao({ mensagem: usuarioCadastrado.descricao });
-            }
-        } else {
-            setSucesso({ mensagem: usuarioCadastrado.message });
+        const usuarioCadastrado = await pedidoService.cadastrar({ pedidoRequests: itens });
+        if (usuarioCadastrado.statusCode)
+            setRertorno(usuarioCadastrado);
+        else
             setFormularioSucesso(true);
-        }
 
         setAguardando(false);
     }
@@ -62,15 +48,9 @@ const Criar = () => {
     const pesquisarProdutos = async () => {
         setAguardando(true);
         const listarTodos = await produtoService.listarTodos();
-        if (listarTodos.statusCode) {
-            if (listarTodos.statusCode === 500) {
-                setAtencao('');
-                setErro({ mensagem: listarTodos.mensagem });
-            } else {
-                setErro('');
-                setAtencao({ mensagem: listarTodos.descricao });
-            }
-        } else
+        if (listarTodos.statusCode)
+            setRertorno(listarTodos);
+        else
             setProdutos(listarTodos);
         setAguardando(false);
     }
@@ -78,15 +58,9 @@ const Criar = () => {
     const pesquisarFornecedores = async () => {
         setAguardando(true);
         const listarTodos = await fornecedorService.listarTodos();
-        if (listarTodos.statusCode) {
-            if (listarTodos.statusCode === 500) {
-                setAtencao('');
-                setErro({ mensagem: listarTodos.mensagem });
-            } else {
-                setErro('');
-                setAtencao({ mensagem: listarTodos.descricao });
-            }
-        } else
+        if (listarTodos.statusCode)
+            setRertorno(listarTodos);
+        else
             setFornecedores(listarTodos);
         setAguardando(false);
     }
@@ -95,15 +69,9 @@ const Criar = () => {
         setAguardando(true);
 
         const buscarProduto = await produtoService.buscarPorId(produto);
-        if (buscarProduto.statusCode) {
-            if (buscarProduto.statusCode === 500) {
-                setAtencao('');
-                setErro({ mensagem: buscarProduto.mensagem });
-            } else {
-                setErro('');
-                setAtencao({ mensagem: buscarProduto.descricao });
-            }
-        } else {
+        if (buscarProduto.statusCode)
+            setRertorno(buscarProduto);
+        else {
             let listaAtual = itens;
             listaAtual.push(
                 {
@@ -124,12 +92,12 @@ const Criar = () => {
     }
 
     const criticas = () => {
-        if(!itens || itens.length === 0 ) return setAtencao({ mensagem: "Inclua pelo menos um item!" });
+        if (!itens || itens.length === 0) return setRertorno({ statusCode: 400, mensagem: "Inclua pelo menos um item!" });
         return true;
     }
 
     if (formularioSucesso)
-        return <Navigate to={`${publicURL}${rotas.listaDePedidos}`} state={{ mensagem: 'Pedido cadastrado com sucesso!' }} replace />
+        return <Navigate to={`${publicURL}${rotas.listaDePedidos}`} state={{ statusCode: 200, mensagem: 'Pedido cadastrado com sucesso!' }} replace />
 
     return (
         <div>
@@ -147,9 +115,10 @@ const Criar = () => {
                 <div className="mr-auto p-2" />
             </div>
             <hr />
-            <AlertaErro erro={erro} />
-            <AlertaAtencao atencao={atencao} />
-            <AlertaSucesso sucesso={sucesso} />
+            <Alerta retorno={retorno} />
+            {/* <AlertaErro erro={erro} /> */}
+            {/* <AlertaAtencao atencao={atencao} />
+            <AlertaSucesso sucesso={sucesso} /> */}
             <ModalCarregando isOpen={aguardando} pagina='Processando solicitação' />
             <div className="form-group row m-0">
                 <Row className="row-cols-lg-auto g-3 align-items-center">
