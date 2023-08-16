@@ -5,9 +5,7 @@ import { publicURL, rotas } from '../../../../core/Config';
 import BotaoAdicionar from '../../../components/BotaoAdicionar';
 import BotaoConfirmar from '../../../components/BotaoConfirmar';
 import BotaoExcluir from '../../../components/BotaoExcluir';
-import AlertaErro from '../../../components/AlertaErro';
-import AlertaAtencao from '../../../components/AlertaAtencao';
-import AlertaSucesso from '../../../components/AlertaSucesso';
+import Alerta from '../../../components/Alerta';
 import PedidoService from '../../../../service/PedidoService';
 import ProdutoService from '../../../../service/ProdutoService';
 import FornecedorService from '../../../../service/FornecedorService';
@@ -16,9 +14,7 @@ import ModalCarregando from '../../../components/ModalCarregando';
 import { formataMoeda } from '../../../../core/Utils';
 
 const Alterar = () => {
-    const [atencao, setAtencao] = useState('');
-    const [sucesso, setSucesso] = useState('');
-    const [erro, setErro] = useState('');
+    const [retorno, setRertorno] = useState('');
     const [aguardando, setAguardando] = useState(false);
     const [formularioSucesso, setFormularioSucesso] = useState(false);
     const [confirmarExclusao, setConfirmarExclusao] = useState(false);
@@ -45,15 +41,9 @@ const Alterar = () => {
     const receberDadosPedido = async () => {
         setAguardando(true);
         const pedidoPorId = await pedidoService.buscarPorId(id);
-        if (pedidoPorId.statusCode) {
-            if (pedidoPorId.statusCode === 500) {
-                setAtencao('');
-                setErro({ mensagem: pedidoPorId.message });
-            } else {
-                setErro('');
-                setAtencao({ mensagem: pedidoPorId.message });
-            }
-        } else {
+        if (pedidoPorId.statusCode) 
+            setRertorno(pedidoPorId);
+        else {
             if (pedidoPorId) {
                 let itens = pedidoPorId.itens.map(i => {
                     return {
@@ -72,25 +62,15 @@ const Alterar = () => {
     }
 
     const alterarPedido = async () => {
-        setErro('');
-
         if (!criticas())
             return;
 
         setAguardando(true);
-        const pedidoAlterado = await pedidoService.alterar(id,itens);
-        if (pedidoAlterado.statusCode) {
-            if (pedidoAlterado.statusCode === 500) {
-                setAtencao('');
-                setErro({ mensagem: pedidoAlterado.mensagem });
-            } else {
-                setErro('');
-                setAtencao({ mensagem: pedidoAlterado.mensagem });
-            }
-        } else {
-            setSucesso({ mensagem: pedidoAlterado.mensagem });
+        const pedidoAlterado = await pedidoService.alterar(id, itens);
+        if (pedidoAlterado.statusCode) 
+            setRertorno(pedidoAlterado);
+        else 
             setFormularioSucesso(true);
-        }
 
         setAguardando(false);
     }
@@ -102,15 +82,9 @@ const Alterar = () => {
     const pesquisarProdutos = async () => {
         setAguardando(true);
         const listarTodos = await produtoService.listarTodos();
-        if (listarTodos.statusCode) {
-            if (listarTodos.statusCode === 500) {
-                setAtencao('');
-                setErro({ mensagem: listarTodos.mensagem });
-            } else {
-                setErro('');
-                setAtencao({ mensagem: listarTodos.descricao });
-            }
-        } else
+        if (listarTodos.statusCode) 
+            setRertorno(listarTodos);
+        else
             setProdutos(listarTodos);
         setAguardando(false);
     }
@@ -118,15 +92,9 @@ const Alterar = () => {
     const pesquisarFornecedores = async () => {
         setAguardando(true);
         const listarTodos = await fornecedorService.listarTodos();
-        if (listarTodos.statusCode) {
-            if (listarTodos.statusCode === 500) {
-                setAtencao('');
-                setErro({ mensagem: listarTodos.mensagem });
-            } else {
-                setErro('');
-                setAtencao({ mensagem: listarTodos.descricao });
-            }
-        } else
+        if (listarTodos.statusCode)
+            setRertorno(listarTodos);
+        else
             setFornecedores(listarTodos);
         setAguardando(false);
     }
@@ -134,18 +102,10 @@ const Alterar = () => {
     const apagarPedido = async () => {
         setAguardando(true);
         const apagar = await pedidoService.apagarPorIdPedido(codigoPedido, fornecedor, codigoProduto);
-        if (apagar.statusCode) {
-            if (apagar.statusCode === 500) {
-                setAtencao('');
-                setSucesso('');
-                setErro({ mensagem: apagar.mensagem });
-            } else {
-                setErro('');
-                setSucesso('');
-                setAtencao({ mensagem: apagar.quantidadeTotalDeItens });
-            }
-        } else {
-            setSucesso({ mensagem: 'Sucesso!' });
+        if (apagar.statusCode) 
+            setRertorno(apagar);
+        else {
+            setRertorno({statusCode:200, mensagem: 'Item removido com sucesso!' });
             setConfirmarExclusao(false);
             receberDadosPedido();
         }
@@ -156,15 +116,9 @@ const Alterar = () => {
         setAguardando(true);
 
         const buscarProduto = await produtoService.buscarPorId(produto);
-        if (buscarProduto.statusCode) {
-            if (buscarProduto.statusCode === 500) {
-                setAtencao('');
-                setErro({ mensagem: buscarProduto.mensagem });
-            } else {
-                setErro('');
-                setAtencao({ mensagem: buscarProduto.descricao });
-            }
-        } else {
+        if (buscarProduto.statusCode) 
+            setRertorno(buscarProduto);
+        else {
             let listaAtual = itens;
             listaAtual.push(
                 {
@@ -193,7 +147,7 @@ const Alterar = () => {
     }
 
     if (formularioSucesso)
-        return <Navigate to={`${publicURL}${rotas.listaDePedidos}`} state={{ mensagem: 'Pedido alterado com sucesso!' }} replace />
+        return <Navigate to={`${publicURL}${rotas.listaDePedidos}`} state={{ statusCode: 200, mensagem: 'Pedido alterado com sucesso!' }} replace />
 
     return (
         <div>
@@ -217,9 +171,7 @@ const Alterar = () => {
                 </div>
             </div>
             <hr />
-            <AlertaErro erro={erro} />
-            <AlertaAtencao atencao={atencao} />
-            <AlertaSucesso sucesso={sucesso} />
+            <Alerta retorno={retorno} />
             <div className="form-group row m-0">
                 <Row className="row-cols-lg-auto g-3 align-items-center">
                     <Col>
