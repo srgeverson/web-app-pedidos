@@ -1,7 +1,7 @@
 import { api } from '../../core/Api';
 import errorHandler from '../../core/handler/Exception';
 
-class UsuarioService {
+class FornecedorService {
 
     async alterar(id, dados) {
         return await api()
@@ -48,6 +48,8 @@ class UsuarioService {
     }
 
     async listarTodos() {
+        console.log(process.env.URL_DB_WebAPIPedidos_Azure);
+// const data = await response.json();
         return await api()
             .get(`/fornecedor/todos`)
             .then((callbackSuccess) => {
@@ -59,4 +61,4 @@ class UsuarioService {
     }
 }
 
-export default UsuarioService;
+export default FornecedorService;

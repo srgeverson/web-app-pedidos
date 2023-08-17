@@ -3,57 +3,43 @@ import { Link, Navigate } from 'react-router-dom';
 import { Form, FormGroup, Label, Input } from 'reactstrap';
 import { publicURL, rotas } from '../../../../core/Config';
 import BotaoConfirmar from '../../../components/BotaoConfirmar';
-import AlertaErro from '../../../components/AlertaErro';
+import Alerta from '../../../components/Alerta';
 import FornecedorService from '../../../../service/FornecedorService';
-import AlertaAtencao from '../../../components/AlertaAtencao';
-import AlertaSucesso from '../../../components/AlertaSucesso';
 import ModalCarregando from '../../../components/ModalCarregando';
 
 const Criar = () => {
+    const [retorno, setRertorno] = useState('');
     const [cnpj, setCnpj] = useState('');
     const [razaoSocial, setRazaoSocial] = useState('');
     const [emailContato, setEmailContato] = useState('');
     const [uf, setUf] = useState('');
     const [nomeContato, setNomeContato] = useState('');
-    const [atencao, setAtencao] = useState('');
-    const [sucesso, setSucesso] = useState('');
-    const [erro, setErro] = useState('');
     const [aguardando, setAguardando] = useState(false);
     const [formularioSucesso, setFormularioSucesso] = useState(false);
     const ufs = ['RO', 'AC', 'AM', 'RR', 'PA', 'AP', 'TO', 'MA', 'PI', 'CE', 'RN', 'PB', 'PE', 'AL', 'SE', 'BA', 'MG', 'ES', 'RJ', 'SP', 'PR', 'SC', 'RS', 'MS', 'MT', 'GO', 'DF'];
     const fornecedorService = new FornecedorService();
 
     const cadastrarFornecedor = async () => {
-        setErro('');
-
         if (!criticas())
             return;
 
         setAguardando(true);
-        const usuarioCadastrado = await fornecedorService.cadastrar({ cnpj, razaoSocial, nomeContato, emailContato, uf });
-        if (usuarioCadastrado.statusCode) {
-            if (usuarioCadastrado.statusCode === 500) {
-                setAtencao('');
-                setErro({ mensagem: usuarioCadastrado.descricao });
-            } else {
-                setErro('');
-                setAtencao({ mensagem: usuarioCadastrado.descricao });
-            }
-        } else {
-            setSucesso({ mensagem: usuarioCadastrado.message });
+        const fornecedorCadastrado = await fornecedorService.cadastrar({ cnpj, razaoSocial, nomeContato, emailContato, uf });
+        if (fornecedorCadastrado.statusCode)
+            setRertorno(fornecedorCadastrado);
+        else
             setFormularioSucesso(true);
-        }
 
         setAguardando(false);
     }
 
     const criticas = () => {
-        if (!cnpj) return setAtencao({ mensagem: "Preencha o CNPJ!" });
+        if (!cnpj) return setRertorno({ statusCode: 400, mensagem: "Preencha o CNPJ!" });
         return true;
     }
 
     if (formularioSucesso)
-        return <Navigate to={`${publicURL}${rotas.listaDeFornecedor}`} state={{ mensagem: 'Fornecedor cadastrado com sucesso!' }} replace />
+        return <Navigate to={`${publicURL}${rotas.listaDeFornecedor}`} state={{ statusCode: 200, mensagem: 'Fornecedor cadastrado com sucesso!' }} replace />
 
     return (
         <div>
@@ -71,9 +57,7 @@ const Criar = () => {
                 <div className="mr-auto p-2" />
             </div>
             <hr />
-            <AlertaErro erro={erro} />
-            <AlertaAtencao atencao={atencao} />
-            <AlertaSucesso sucesso={sucesso} />
+            <Alerta retorno={retorno} />
             <ModalCarregando isOpen={aguardando} pagina='Processando solicitação' />
             <Form>
                 <FormGroup>
@@ -107,7 +91,7 @@ const Criar = () => {
                     <Label for="uf">UF</Label>
                     <select
                         className="form-select form-select-lg mb-3"
-                        aria-label="Large select example" 
+                        aria-label="Large select example"
                         placeholder="Selecione uma UF"
                         onChange={(ev) => setUf(ev.target.value)}>
                         <option key=''></option>

@@ -3,21 +3,17 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import { Form, FormGroup, Label, Input } from 'reactstrap';
 import { publicURL, rotas } from '../../../../core/Config';
 import BotaoConfirmar from '../../../components/BotaoConfirmar';
-import AlertaErro from '../../../components/AlertaErro';
+import Alerta from '../../../components/Alerta';
 import FornecedorService from '../../../../service/FornecedorService';
-import AlertaAtencao from '../../../components/AlertaAtencao';
-import AlertaSucesso from '../../../components/AlertaSucesso';
 import ModalCarregando from '../../../components/ModalCarregando';
 
 const Alterar = () => {
+    const [retorno, setRetorno] = useState('');
     const [cnpj, setCnpj] = useState('');
     const [razaoSocial, setRazaoSocial] = useState('');
     const [emailContato, setEmailContato] = useState('');
     const [uf, setUf] = useState('');
     const [nomeContato, setNomeContato] = useState('');
-    const [atencao, setAtencao] = useState('');
-    const [sucesso, setSucesso] = useState('');
-    const [erro, setErro] = useState('');
     const [aguardando, setAguardando] = useState(false);
     const [formularioSucesso, setFormularioSucesso] = useState(false);
     const fornecedorService = new FornecedorService();
@@ -32,15 +28,9 @@ const Alterar = () => {
     const receberDadosFornecedor = async () => {
         setAguardando(true);
         const fornecedorPorId = await fornecedorService.buscarPorId(id);
-        if (fornecedorPorId.statusCode) {
-            if (fornecedorPorId.statusCode === 500) {
-                setAtencao('');
-                setErro({ mensagem: fornecedorPorId.message });
-            } else {
-                setErro('');
-                setAtencao({ mensagem: fornecedorPorId.message });
-            }
-        } else {
+        if (fornecedorPorId.statusCode)
+            setRetorno(fornecedorPorId);
+        else {
             if (fornecedorPorId) {
                 setCnpj(fornecedorPorId.cnpj);
                 setRazaoSocial(fornecedorPorId.razaoSocial);
@@ -53,26 +43,16 @@ const Alterar = () => {
     }
 
     const alterarFornecedor = async () => {
-        setErro('');
-
         if (!criticas())
             return;
 
         setAguardando(true);
-        const fornecedorAlterado = await fornecedorService.alterar(id, {cnpj:id, razaoSocial, nomeContato, emailContato, uf });
+        const fornecedorAlterado = await fornecedorService.alterar(id, { cnpj: id, razaoSocial, nomeContato, emailContato, uf });
 
-        if (fornecedorAlterado.statusCode) {
-            if (fornecedorAlterado.statusCode === 500) {
-                setAtencao('');
-                setErro({ mensagem: fornecedorAlterado.mensagem });
-            } else {
-                setErro('');
-                setAtencao({ mensagem: fornecedorAlterado.mensagem });
-            }
-        } else {
-            setSucesso({ mensagem: fornecedorAlterado.mensagem });
+        if (fornecedorAlterado.statusCode)
+            setRetorno(fornecedorAlterado);
+        else
             setFormularioSucesso(true);
-        }
 
         setAguardando(false);
     }
@@ -82,7 +62,7 @@ const Alterar = () => {
     }
 
     if (formularioSucesso)
-        return <Navigate to={`${publicURL}${rotas.listaDeFornecedor}`} state={{ mensagem: 'Fornecedor alterado com sucesso!' }} replace />
+        return <Navigate to={`${publicURL}${rotas.listaDeFornecedor}`} state={{ statusCode: 200, mensagem: 'Fornecedor alterado com sucesso!' }} replace />
 
     return (
         <div>
@@ -106,9 +86,7 @@ const Alterar = () => {
                 </div>
             </div>
             <hr />
-            <AlertaErro erro={erro} />
-            <AlertaAtencao atencao={atencao} />
-            <AlertaSucesso sucesso={sucesso} />
+            <Alerta retorno={retorno} />
             <ModalCarregando isOpen={aguardando} pagina='Processando solicitação' />
             <Form>
                 <FormGroup>
@@ -142,7 +120,7 @@ const Alterar = () => {
                     <Label for="uf">UF</Label>
                     <select
                         className="form-select form-select-lg mb-3"
-                        aria-label="Large select example" 
+                        aria-label="Large select example"
                         placeholder="Selecione uma UF"
                         onChange={(ev) => setUf(ev.target.value)}
                         value={uf}>

@@ -1,27 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import FornecedorService from '../../../../service/FornecedorService';
-import AlertaAtencao from '../../../components/AlertaAtencao';
-import AlertaErro from '../../../components/AlertaErro';
+import Alerta from '../../../components/Alerta';
 import { publicURL, rotas } from '../../../../core/Config';
 import ModalCarregando from '../../../components/ModalCarregando';
 
 const Visualizar = () => {
+    const [retorno, setRertorno] = useState('');
     const { id } = useParams();
     const [fornecedor, setFornecedor] = useState(null);
-    const [atencao, setAtencao] = useState('');
-    const [erro, setErro] = useState('');
     const fornecedorService = new FornecedorService();
     const [aguardando, setAguardando] = useState(false);
     const location = useLocation();
 
     useEffect(() => {
-        if (location && location.state) {
-            if (location.state.erro === true)
-                setErro({ mensagem: location.state.mensagem });
-            else if (location.state.alerta === true)
-                setAtencao({ mensagem: location.state.mensagem });
-        }
+        if (location && location.state) 
+            setRertorno(location.state);
         getUsuario(id);
         // eslint-disable-next-line
     }, []);
@@ -29,15 +23,9 @@ const Visualizar = () => {
     const getUsuario = async (id) => {
         setAguardando(true);
         const fornecedorPorId = await fornecedorService.buscarPorId(id);
-        if (fornecedorPorId.statusCode) {
-            if (fornecedorPorId.statusCode === 500) {
-                setAtencao('');
-                setErro({ mensagem: fornecedorPorId.message });
-            } else {
-                setErro('');
-                setAtencao({ mensagem: fornecedorPorId.message });
-            }
-        } else 
+        if (fornecedorPorId.statusCode) 
+            setRertorno(fornecedor);
+        else 
             setFornecedor(fornecedorPorId);
         setAguardando(false);
     }
@@ -54,8 +42,7 @@ const Visualizar = () => {
                 </div>
                 <div className="mr-auto p-2">
                     <h2 className="display-4 titulo">Detalhes do Fornecedor</h2>
-                    <AlertaErro erro={erro} />
-                    <AlertaAtencao atencao={atencao} />
+                    <Alerta retorno={retorno} />
                 </div>
                 <div className="mr-auto p-2">
                     <Link to={`${publicURL}${rotas.alteracaoDeFornecedor}${id}`}>

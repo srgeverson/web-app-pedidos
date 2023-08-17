@@ -9,18 +9,21 @@ const Alerta = (props) => {
         return (
             <Alert color="danger" isOpen={visible} toggle={onDismiss}>
                 {props.retorno.mensagem}
+                {props.retorno.descricao ? `. ${props.retorno.descricao}` : ''}
             </Alert>
         );
     else if (props.retorno && props.retorno.statusCode >= 300 && props.retorno.statusCode < 500)
         return (
             <Alert color="warning" isOpen={visible} toggle={onDismiss}>
-                {props.retorno.mensagem}
+               {props.retorno.mensagem}
+                {props.retorno.descricao ? `. ${props.retorno.descricao}` : ''}
             </Alert>
         );
     else if (props.retorno && props.retorno.statusCode >= 200 && props.retorno.statusCode < 300)
         return (
             <Alert color="success" isOpen={visible} toggle={onDismiss}>
                 {props.retorno.mensagem}
+                {props.retorno.descricao ? `. ${props.retorno.descricao}` : ''}
             </Alert>
         );
     else

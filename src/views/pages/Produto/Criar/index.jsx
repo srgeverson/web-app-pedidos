@@ -3,42 +3,28 @@ import { Link, Navigate } from 'react-router-dom';
 import { Form, FormGroup, Label, Input } from 'reactstrap';
 import { publicURL, rotas } from '../../../../core/Config';
 import BotaoConfirmar from '../../../components/BotaoConfirmar';
-import AlertaErro from '../../../components/AlertaErro';
+import Alerta from '../../../components/Alerta';
 import ProdutoService from '../../../../service/ProdutoService';
-import AlertaAtencao from '../../../components/AlertaAtencao';
-import AlertaSucesso from '../../../components/AlertaSucesso';
 import ModalCarregando from '../../../components/ModalCarregando';
 
 const Criar = () => {
+    const [retorno, setRertorno] = useState('');
     const [descricao, setDescricao] = useState('');
     const [valor, setValor] = useState('');
-    const [atencao, setAtencao] = useState('');
-    const [sucesso, setSucesso] = useState('');
-    const [erro, setErro] = useState('');
     const [aguardando, setAguardando] = useState(false);
     const [formularioSucesso, setFormularioSucesso] = useState(false);
     const produtoService = new ProdutoService();
 
     const cadastrarProduto = async () => {
-        setErro('');
-
         if (!criticas())
             return;
 
         setAguardando(true);
         const usuarioCadastrado = await produtoService.cadastrar({ descricao, valor });
-        if (usuarioCadastrado.statusCode) {
-            if (usuarioCadastrado.statusCode === 500) {
-                setAtencao('');
-                setErro({ mensagem: usuarioCadastrado.descricao });
-            } else {
-                setErro('');
-                setAtencao({ mensagem: usuarioCadastrado.descricao });
-            }
-        } else {
-            setSucesso({ mensagem: usuarioCadastrado.message });
+        if (usuarioCadastrado.statusCode)
+            setRertorno(usuarioCadastrado);
+        else
             setFormularioSucesso(true);
-        }
 
         setAguardando(false);
     }
@@ -48,7 +34,7 @@ const Criar = () => {
     }
 
     if (formularioSucesso)
-        return <Navigate to={`${publicURL}${rotas.listaDeProdutos}`} state={{ mensagem: 'Produto cadastrado com sucesso!' }} replace />
+        return <Navigate to={`${publicURL}${rotas.listaDeProdutos}`} state={{ statusCode: 200, mensagem: 'Produto cadastrado com sucesso!' }} replace />
 
     return (
         <div>
@@ -66,9 +52,7 @@ const Criar = () => {
                 <div className="mr-auto p-2" />
             </div>
             <hr />
-            <AlertaErro erro={erro} />
-            <AlertaAtencao atencao={atencao} />
-            <AlertaSucesso sucesso={sucesso} />
+            <Alerta retorno={retorno} />
             <ModalCarregando isOpen={aguardando} pagina='Processando solicitação' />
             <Form>
                 <FormGroup>
