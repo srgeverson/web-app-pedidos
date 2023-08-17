@@ -3,19 +3,15 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import { Form, FormGroup, Label, Input } from 'reactstrap';
 import { publicURL, rotas } from '../../../../core/Config';
 import BotaoConfirmar from '../../../components/BotaoConfirmar';
-import AlertaErro from '../../../components/AlertaErro';
+import Alerta from '../../../components/Alerta';
 import ProdutoService from '../../../../service/ProdutoService';
-import AlertaAtencao from '../../../components/AlertaAtencao';
-import AlertaSucesso from '../../../components/AlertaSucesso';
 import ModalCarregando from '../../../components/ModalCarregando';
 
 const Alterar = () => {
+    const [retorno, setRertorno] = useState('');
     const [codigo, setCodigo] = useState('');
     const [descricao, setDescricao] = useState('');
     const [valor, setValor] = useState('');
-    const [atencao, setAtencao] = useState('');
-    const [sucesso, setSucesso] = useState('');
-    const [erro, setErro] = useState('');
     const [aguardando, setAguardando] = useState(false);
     const [formularioSucesso, setFormularioSucesso] = useState(false);
     const frodutoService = new ProdutoService();
@@ -29,15 +25,9 @@ const Alterar = () => {
     const receberDadosProduto = async () => {
         setAguardando(true);
         const fornecedorPorId = await frodutoService.buscarPorId(id);
-        if (fornecedorPorId.statusCode) {
-            if (fornecedorPorId.statusCode === 500) {
-                setAtencao('');
-                setErro({ mensagem: fornecedorPorId.message });
-            } else {
-                setErro('');
-                setAtencao({ mensagem: fornecedorPorId.message });
-            }
-        } else {
+        if (fornecedorPorId.statusCode)
+            setRertorno(fornecedorPorId);
+        else {
             if (fornecedorPorId) {
                 setCodigo(fornecedorPorId.codigo);
                 setDescricao(fornecedorPorId.descricao);
@@ -48,26 +38,16 @@ const Alterar = () => {
     }
 
     const alterarProduto = async () => {
-        setErro('');
-
         if (!criticas())
             return;
 
         setAguardando(true);
-        const fornecedorAlterado = await frodutoService.alterar(id, {codigo:id, descricao, valor });
+        const fornecedorAlterado = await frodutoService.alterar(id, { codigo: id, descricao, valor });
 
-        if (fornecedorAlterado.statusCode) {
-            if (fornecedorAlterado.statusCode === 500) {
-                setAtencao('');
-                setErro({ mensagem: fornecedorAlterado.mensagem });
-            } else {
-                setErro('');
-                setAtencao({ mensagem: fornecedorAlterado.mensagem });
-            }
-        } else {
-            setSucesso({ mensagem: fornecedorAlterado.mensagem });
+        if (fornecedorAlterado.statusCode)
+            setRertorno(retorno);
+        else
             setFormularioSucesso(true);
-        }
 
         setAguardando(false);
     }
@@ -77,7 +57,7 @@ const Alterar = () => {
     }
 
     if (formularioSucesso)
-        return <Navigate to={`${publicURL}${rotas.listaDeProdutos}`} state={{ mensagem: 'Produto alterado com sucesso!' }} replace />
+        return <Navigate to={`${publicURL}${rotas.listaDeProdutos}`} state={{ statusCode: 200, mensagem: 'Produto alterado com sucesso!' }} replace />
 
     return (
         <div>
@@ -101,9 +81,7 @@ const Alterar = () => {
                 </div>
             </div>
             <hr />
-            <AlertaErro erro={erro} />
-            <AlertaAtencao atencao={atencao} />
-            <AlertaSucesso sucesso={sucesso} />
+            <Alerta retorno={retorno} />
             <ModalCarregando isOpen={aguardando} pagina='Processando solicitação' />
             <Form>
                 <FormGroup>

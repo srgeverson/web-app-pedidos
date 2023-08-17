@@ -1,28 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import ProdutoService from '../../../../service/ProdutoService';
-import AlertaAtencao from '../../../components/AlertaAtencao';
-import AlertaErro from '../../../components/AlertaErro';
+import Alerta from '../../../components/Alerta';
 import { publicURL, rotas } from '../../../../core/Config';
 import ModalCarregando from '../../../components/ModalCarregando';
 import { formataDataEHora, formataMoeda } from '../../../../core/Utils';
 
 const Visualizar = () => {
+    const [retorno, setRertorno] = useState('');
     const { id } = useParams();
     const [produto, setProduto] = useState(null);
-    const [atencao, setAtencao] = useState('');
-    const [erro, setErro] = useState('');
     const produtoService = new ProdutoService();
     const [aguardando, setAguardando] = useState(false);
     const location = useLocation();
 
     useEffect(() => {
-        if (location && location.state) {
-            if (location.state.erro === true)
-                setErro({ mensagem: location.state.mensagem });
-            else if (location.state.alerta === true)
-                setAtencao({ mensagem: location.state.mensagem });
-        }
+        if (location && location.state)
+            setRertorno(location.state);
         getUsuario(id);
         // eslint-disable-next-line
     }, []);
@@ -30,15 +24,9 @@ const Visualizar = () => {
     const getUsuario = async (id) => {
         setAguardando(true);
         const produtoPorId = await produtoService.buscarPorId(id);
-        if (produtoPorId.statusCode) {
-            if (produtoPorId.statusCode === 500) {
-                setAtencao('');
-                setErro({ mensagem: produtoPorId.message });
-            } else {
-                setErro('');
-                setAtencao({ mensagem: produtoPorId.message });
-            }
-        } else 
+        if (produtoPorId.statusCode) 
+            setRertorno(produtoPorId);
+        else
             setProduto(produtoPorId);
         setAguardando(false);
     }
@@ -55,8 +43,7 @@ const Visualizar = () => {
                 </div>
                 <div className="mr-auto p-2">
                     <h2 className="display-4 titulo">Detalhes do Produto</h2>
-                    <AlertaErro erro={erro} />
-                    <AlertaAtencao atencao={atencao} />
+                    <Alerta retorno={retorno} />
                 </div>
                 <div className="mr-auto p-2">
                     <Link to={`${publicURL}${rotas.alteracaoDeProduto}${id}`}>

@@ -3,9 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { DropdownMenu, DropdownToggle, FormGroup, UncontrolledButtonDropdown } from 'reactstrap';
 import { publicURL, rotas } from '../../../core/Config';
 import { formataDataEHora, formataMoeda } from '../../../core/Utils'
-import AlertaErro from '../../components/AlertaErro';
-import AlertaAtencao from '../../components/AlertaAtencao';
-import AlertaSucesso from '../../components/AlertaSucesso';
+import Alerta from '../../components/Alerta';
 import BotaoExcluir from '../../components/BotaoExcluir';
 import BotaoCadastrar from '../../components/BotaoCadastrar';
 import BotaoEditar from '../../components/BotaoEditar';
@@ -15,9 +13,7 @@ import ModalCarregando from '../../components/ModalCarregando';
 import ProdutoService from '../../../service/ProdutoService';
 
 const Produto = () => {
-    const [atencao, setAtencao] = useState('');
-    const [sucesso, setSucesso] = useState('');
-    const [erro, setErro] = useState('');
+    const [retorno, setRertorno] = useState('');
     const [aguardando, setAguardando] = useState(false);
     const [produtos, setProdutos] = useState([]);
     const [idParaApagar, setIdParaApagar] = useState('');
@@ -26,29 +22,17 @@ const Produto = () => {
     const produdoService = new ProdutoService();
 
     useEffect(() => {
-        if (location && location.state) {
-            if (location.state.erro === true)
-                setErro({ mensagem: location.state.mensagem });
-            else if (location.state.alerta === true)
-                setAtencao({ mensagem: location.state.mensagem });
-            else
-                setSucesso({ mensagem: location.state.mensagem });
-        }
+        if (location && location.state)
+            setRertorno(location.state);
         // eslint-disable-next-line
     }, []);
 
     const pesquisarProdutos = async () => {
         setAguardando(true);
         const listarTodos = await produdoService.listarTodos();
-        if (listarTodos.statusCode) {
-            if (listarTodos.statusCode === 500) {
-                setAtencao('');
-                setErro({ mensagem: listarTodos.mensagem });
-            } else {
-                setErro('');
-                setAtencao({ mensagem: listarTodos.descricao });
-            }
-        } else
+        if (listarTodos.statusCode)
+            setRertorno(listarTodos);
+        else
             setProdutos(listarTodos);
         setAguardando(false);
     }
@@ -56,18 +40,10 @@ const Produto = () => {
     const apagarProduto = async () => {
         setAguardando(true);
         const apagar = await produdoService.apagarPorId(idParaApagar);
-        if (apagar.statusCode) {
-            if (apagar.statusCode === 500) {
-                setAtencao('');
-                setSucesso('');
-                setErro({ mensagem: apagar.mensagem });
-            } else {
-                setErro('');
-                setSucesso('');
-                setAtencao({ mensagem: apagar.descricao });
-            }
-        } else {
-            setSucesso({ mensagem: 'Sucesso!' });
+        if (apagar.statusCode)
+            setRertorno(apagar);
+        else {
+            setRertorno({ statusCode: 200, mensagem: 'Produto apagado com sucesso!' });
             setConfirmarExclusao(false);
             pesquisarProdutos();
         }
@@ -86,9 +62,7 @@ const Produto = () => {
                     <h2 className="display-4 titulo">Produtos</h2>
                 </div>
                 <div className="mr-auto p-2">
-                    <AlertaErro erro={erro} />
-                    <AlertaAtencao atencao={atencao} />
-                    <AlertaSucesso sucesso={sucesso} />
+                    <Alerta retorno={retorno} />
                 </div>
             </div>
             <hr />
