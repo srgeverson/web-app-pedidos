@@ -1,10 +1,11 @@
 import { api } from '../../core/Api';
 import errorHandler from '../../core/handler/Exception';
+import GenericService from '../GenericService';
 
-class FornecedorService {
+class FornecedorService extends GenericService {
 
     async alterar(id, dados) {
-        return await api()
+        return await api(this.getToken())
             .put(`/fornecedor/atualizar?cnpj=${id}`, dados)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
@@ -15,7 +16,7 @@ class FornecedorService {
     }
 
     async apagarPorId(id) {
-        return await api()
+        return await api(this.getToken())
             .delete(`/fornecedor/apagar?id=${id}`)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
@@ -26,7 +27,7 @@ class FornecedorService {
     }
 
     async buscarPorId(id) {
-        return await api()
+        return await api(this.getToken())
             .get(`/fornecedor/por-cnpj?cnpj=${id}`)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
@@ -37,7 +38,7 @@ class FornecedorService {
     }
 
     async cadastrar(dados) {
-        return await api()
+        return await api(this.getToken())
             .post(`/fornecedor/cadastrar`, dados)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
@@ -48,9 +49,7 @@ class FornecedorService {
     }
 
     async listarTodos() {
-        console.log(process.env.URL_DB_WebAPIPedidos_Azure);
-// const data = await response.json();
-        return await api()
+        return await api(this.getToken())
             .get(`/fornecedor/todos`)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;

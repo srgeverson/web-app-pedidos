@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
 import ProdutoService from '../../../../service/ProdutoService';
 import Alerta from '../../../components/Alerta';
 import { publicURL, rotas } from '../../../../core/Config';
@@ -7,29 +7,37 @@ import ModalCarregando from '../../../components/ModalCarregando';
 import { formataDataEHora, formataMoeda } from '../../../../core/Utils';
 
 const Visualizar = () => {
-    const [retorno, setRertorno] = useState('');
+    const [retorno, setRetorno] = useState('');
     const { id } = useParams();
     const [produto, setProduto] = useState(null);
     const produtoService = new ProdutoService();
     const [aguardando, setAguardando] = useState(false);
     const location = useLocation();
+    const [irPara, setIrPara] = useState('');
 
     useEffect(() => {
         if (location && location.state)
-            setRertorno(location.state);
-        getUsuario(id);
+            setRetorno(location.state);
+        getProduto(id);
         // eslint-disable-next-line
     }, []);
 
-    const getUsuario = async (id) => {
+    const getProduto = async (id) => {
         setAguardando(true);
         const produtoPorId = await produtoService.buscarPorId(id);
-        if (produtoPorId.statusCode) 
-            setRertorno(produtoPorId);
-        else
+        if (produtoPorId.statusCode) {
+            if (produtoPorId.statusCode === 401) {
+                produtoService.limparToken();
+                setIrPara({ rota: rotas.login, statusCode: produtoPorId.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+            } else
+                setRetorno(produtoPorId);
+        } else
             setProduto(produtoPorId);
         setAguardando(false);
     }
+
+    if (irPara)
+        return <Navigate to={`${publicURL}${irPara.rota}`} state={{ statusCode: irPara.statusCode, mensagem: irPara.mensagem }} replace />
 
     return (
         <div>

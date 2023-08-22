@@ -14,9 +14,8 @@ import ModalCarregando from '../../../components/ModalCarregando';
 import { formataMoeda } from '../../../../core/Utils';
 
 const Alterar = () => {
-    const [retorno, setRertorno] = useState('');
+    const [retorno, setRetorno] = useState('');
     const [aguardando, setAguardando] = useState(false);
-    const [formularioSucesso, setFormularioSucesso] = useState(false);
     const [confirmarExclusao, setConfirmarExclusao] = useState(false);
     const [produtos, setProdutos] = useState([]);
     const [produto, setProduto] = useState('');
@@ -30,6 +29,7 @@ const Alterar = () => {
     const produtoService = new ProdutoService();
     const fornecedorService = new FornecedorService();
     const { id } = useParams();
+    const [irPara, setIrPara] = useState('');
 
     useEffect(() => {
         receberDadosPedido();
@@ -41,9 +41,13 @@ const Alterar = () => {
     const receberDadosPedido = async () => {
         setAguardando(true);
         const pedidoPorId = await pedidoService.buscarPorId(id);
-        if (pedidoPorId.statusCode) 
-            setRertorno(pedidoPorId);
-        else {
+        if (pedidoPorId.statusCode) {
+            if (pedidoPorId.statusCode === 401){
+                pedidoService.limparToken();
+                setIrPara({ rota: rotas.login, statusCode: pedidoPorId.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+            } else
+                setRetorno(pedidoPorId);
+        } else {
             if (pedidoPorId) {
                 let itens = pedidoPorId.itens.map(i => {
                     return {
@@ -67,10 +71,14 @@ const Alterar = () => {
 
         setAguardando(true);
         const pedidoAlterado = await pedidoService.alterar(id, itens);
-        if (pedidoAlterado.statusCode) 
-            setRertorno(pedidoAlterado);
-        else 
-            setFormularioSucesso(true);
+        if (pedidoAlterado.statusCode) {
+            if (pedidoAlterado.statusCode === 401){
+                fornecedorService.limparToken();
+                setIrPara({ rota: rotas.login, statusCode: pedidoAlterado.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+            } else
+                setRetorno(pedidoAlterado);
+        } else 
+            setIrPara({ rota: rotas.listaDePedidos, statusCode: 200, mensagem: 'Pedido alterado com sucesso!' });
 
         setAguardando(false);
     }
@@ -83,7 +91,7 @@ const Alterar = () => {
         setAguardando(true);
         const listarTodos = await produtoService.listarTodos();
         if (listarTodos.statusCode) 
-            setRertorno(listarTodos);
+            setRetorno(listarTodos);
         else
             setProdutos(listarTodos);
         setAguardando(false);
@@ -93,7 +101,7 @@ const Alterar = () => {
         setAguardando(true);
         const listarTodos = await fornecedorService.listarTodos();
         if (listarTodos.statusCode)
-            setRertorno(listarTodos);
+            setRetorno(listarTodos);
         else
             setFornecedores(listarTodos);
         setAguardando(false);
@@ -103,9 +111,9 @@ const Alterar = () => {
         setAguardando(true);
         const apagar = await pedidoService.apagarPorIdPedido(codigoPedido, fornecedor, codigoProduto);
         if (apagar.statusCode) 
-            setRertorno(apagar);
+            setRetorno(apagar);
         else {
-            setRertorno({statusCode:200, mensagem: 'Item removido com sucesso!' });
+            setRetorno({statusCode:200, mensagem: 'Item removido com sucesso!' });
             setConfirmarExclusao(false);
             receberDadosPedido();
         }
@@ -117,7 +125,7 @@ const Alterar = () => {
 
         const buscarProduto = await produtoService.buscarPorId(produto);
         if (buscarProduto.statusCode) 
-            setRertorno(buscarProduto);
+            setRetorno(buscarProduto);
         else {
             let listaAtual = itens;
             listaAtual.push(
@@ -146,8 +154,8 @@ const Alterar = () => {
         setCodigoProduto(produto);
     }
 
-    if (formularioSucesso)
-        return <Navigate to={`${publicURL}${rotas.listaDePedidos}`} state={{ statusCode: 200, mensagem: 'Pedido alterado com sucesso!' }} replace />
+    if (irPara)
+        return <Navigate to={`${publicURL}${irPara.rota}`} state={{ statusCode: irPara.statusCode, mensagem: irPara.mensagem }} replace />
 
     return (
         <div>

@@ -8,14 +8,14 @@ import ProdutoService from '../../../../service/ProdutoService';
 import ModalCarregando from '../../../components/ModalCarregando';
 
 const Alterar = () => {
-    const [retorno, setRertorno] = useState('');
+    const [retorno, setRetorno] = useState('');
     const [codigo, setCodigo] = useState('');
     const [descricao, setDescricao] = useState('');
     const [valor, setValor] = useState('');
     const [aguardando, setAguardando] = useState(false);
-    const [formularioSucesso, setFormularioSucesso] = useState(false);
-    const frodutoService = new ProdutoService();
+    const produtoService = new ProdutoService();
     const { id } = useParams();
+    const [irPara, setIrPara] = useState('');
 
     useEffect(() => {
         receberDadosProduto();
@@ -24,9 +24,9 @@ const Alterar = () => {
 
     const receberDadosProduto = async () => {
         setAguardando(true);
-        const fornecedorPorId = await frodutoService.buscarPorId(id);
+        const fornecedorPorId = await produtoService.buscarPorId(id);
         if (fornecedorPorId.statusCode)
-            setRertorno(fornecedorPorId);
+            setRetorno(fornecedorPorId);
         else {
             if (fornecedorPorId) {
                 setCodigo(fornecedorPorId.codigo);
@@ -42,12 +42,17 @@ const Alterar = () => {
             return;
 
         setAguardando(true);
-        const fornecedorAlterado = await frodutoService.alterar(id, { codigo: id, descricao, valor });
+        const produtoAlterado = await produtoService.alterar(id, { codigo: id, descricao, valor });
 
-        if (fornecedorAlterado.statusCode)
-            setRertorno(retorno);
-        else
-            setFormularioSucesso(true);
+        if (produtoAlterado.statusCode) {
+            if (produtoAlterado.statusCode === 401) {
+                produtoService.limparToken();
+                setIrPara({ rota: rotas.login, statusCode: produtoAlterado.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+            } else
+                setRetorno(produtoAlterado);
+        } else
+            setIrPara({ rota: rotas.listaDeFornecedor, statusCode: 200, mensagem: 'Produto alterado com sucesso!' });
+
 
         setAguardando(false);
     }
@@ -56,8 +61,8 @@ const Alterar = () => {
         return true;
     }
 
-    if (formularioSucesso)
-        return <Navigate to={`${publicURL}${rotas.listaDeProdutos}`} state={{ statusCode: 200, mensagem: 'Produto alterado com sucesso!' }} replace />
+    if (irPara)
+        return <Navigate to={`${publicURL}${irPara.rota}`} state={{ statusCode: irPara.statusCode, mensagem: irPara.mensagem }} replace />
 
     return (
         <div>

@@ -8,23 +8,28 @@ import ProdutoService from '../../../../service/ProdutoService';
 import ModalCarregando from '../../../components/ModalCarregando';
 
 const Criar = () => {
-    const [retorno, setRertorno] = useState('');
+    const [retorno, setRetorno] = useState('');
     const [descricao, setDescricao] = useState('');
     const [valor, setValor] = useState('');
     const [aguardando, setAguardando] = useState(false);
-    const [formularioSucesso, setFormularioSucesso] = useState(false);
     const produtoService = new ProdutoService();
+    const [irPara, setIrPara] = useState('');
 
     const cadastrarProduto = async () => {
         if (!criticas())
             return;
 
         setAguardando(true);
-        const usuarioCadastrado = await produtoService.cadastrar({ descricao, valor });
-        if (usuarioCadastrado.statusCode)
-            setRertorno(usuarioCadastrado);
-        else
-            setFormularioSucesso(true);
+        const produtoCadastrado = await produtoService.cadastrar({ descricao, valor });
+        if (produtoCadastrado.statusCode) {
+            if (produtoCadastrado.statusCode === 401) {
+                produtoService.limparToken();
+                setIrPara({ rota: rotas.login, statusCode: produtoCadastrado.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+            } else
+                setRetorno(produtoCadastrado);
+        } else
+            setIrPara({ rota: rotas.listaDeFornecedor, statusCode: 200, mensagem: 'Produto cadastrado com sucesso!' });
+
 
         setAguardando(false);
     }
@@ -33,8 +38,8 @@ const Criar = () => {
         return true;
     }
 
-    if (formularioSucesso)
-        return <Navigate to={`${publicURL}${rotas.listaDeProdutos}`} state={{ statusCode: 200, mensagem: 'Produto cadastrado com sucesso!' }} replace />
+    if (irPara)
+        return <Navigate to={`${publicURL}${irPara.rota}`} state={{ statusCode: irPara.statusCode, mensagem: irPara.mensagem }} replace />
 
     return (
         <div>

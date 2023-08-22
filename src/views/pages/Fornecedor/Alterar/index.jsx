@@ -15,7 +15,7 @@ const Alterar = () => {
     const [uf, setUf] = useState('');
     const [nomeContato, setNomeContato] = useState('');
     const [aguardando, setAguardando] = useState(false);
-    const [formularioSucesso, setFormularioSucesso] = useState(false);
+    const [irPara, setIrPara] = useState('');
     const fornecedorService = new FornecedorService();
     const { id } = useParams();
     const ufs = ['RO', 'AC', 'AM', 'RR', 'PA', 'AP', 'TO', 'MA', 'PI', 'CE', 'RN', 'PB', 'PE', 'AL', 'SE', 'BA', 'MG', 'ES', 'RJ', 'SP', 'PR', 'SC', 'RS', 'MS', 'MT', 'GO', 'DF'];
@@ -49,10 +49,15 @@ const Alterar = () => {
         setAguardando(true);
         const fornecedorAlterado = await fornecedorService.alterar(id, { cnpj: id, razaoSocial, nomeContato, emailContato, uf });
 
-        if (fornecedorAlterado.statusCode)
-            setRetorno(fornecedorAlterado);
-        else
-            setFormularioSucesso(true);
+        if (fornecedorAlterado.statusCode) {
+            if (fornecedorAlterado.statusCode === 401){
+                fornecedorService.limparToken();
+                setIrPara({ rota: rotas.login, statusCode: fornecedorAlterado.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+            } else
+                setRetorno(fornecedorAlterado);
+        } else 
+            setIrPara({ rota: rotas.listaDeFornecedor, statusCode: 200, mensagem: 'Fornecedor alterado com sucesso!' });
+
 
         setAguardando(false);
     }
@@ -61,8 +66,8 @@ const Alterar = () => {
         return true;
     }
 
-    if (formularioSucesso)
-        return <Navigate to={`${publicURL}${rotas.listaDeFornecedor}`} state={{ statusCode: 200, mensagem: 'Fornecedor alterado com sucesso!' }} replace />
+    if (irPara)
+        return <Navigate to={`${publicURL}${irPara.rota}`} state={{ statusCode: irPara.statusCode, mensagem: irPara.mensagem }} replace />
 
     return (
         <div>

@@ -12,9 +12,8 @@ import ModalCarregando from '../../../components/ModalCarregando';
 import { formataMoeda } from '../../../../core/Utils';
 
 const Criar = () => {
-    const [retorno, setRertorno] = useState('');
+    const [retorno, setRetorno] = useState('');
     const [aguardando, setAguardando] = useState(false);
-    const [formularioSucesso, setFormularioSucesso] = useState(false);
     const [produtos, setProdutos] = useState([]);
     const [produto, setProduto] = useState('');
     const [fornecedores, setFornecedores] = useState([]);
@@ -24,20 +23,7 @@ const Criar = () => {
     const pedidoService = new PedidoService();
     const produtoService = new ProdutoService();
     const fornecedorService = new FornecedorService();
-
-    const cadastrarPedido = async () => {
-        if (!criticas())
-            return;
-
-        setAguardando(true);
-        const usuarioCadastrado = await pedidoService.cadastrar({ pedidoRequests: itens });
-        if (usuarioCadastrado.statusCode)
-            setRertorno(usuarioCadastrado);
-        else
-            setFormularioSucesso(true);
-
-        setAguardando(false);
-    }
+    const [irPara, setIrPara] = useState('');
 
     useEffect(() => {
         pesquisarProdutos();
@@ -45,12 +31,34 @@ const Criar = () => {
         // eslint-disable-next-line
     }, []);
 
+    const cadastrarPedido = async () => {
+        if (!criticas())
+            return;
+
+        setAguardando(true);
+        const usuarioCadastrado = await pedidoService.cadastrar({ pedidoRequests: itens });
+        if (usuarioCadastrado.statusCode) {
+            if (usuarioCadastrado.statusCode === 401){
+                fornecedorService.limparToken();
+                setIrPara({ rota: rotas.login, statusCode: usuarioCadastrado.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+            } else
+                setRetorno(usuarioCadastrado);
+        } else
+            setIrPara({ rota: rotas.listaDePedidos, statusCode: 200, mensagem: 'Pedido cadastrado com sucesso!' });
+
+        setAguardando(false);
+    }
+
     const pesquisarProdutos = async () => {
         setAguardando(true);
         const listarTodos = await produtoService.listarTodos();
-        if (listarTodos.statusCode)
-            setRertorno(listarTodos);
-        else
+        if (listarTodos.statusCode) {
+            if (listarTodos.statusCode === 401){
+                produtoService.limparToken();
+                setIrPara({ rota: rotas.login, statusCode: listarTodos.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+            } else
+                setRetorno(listarTodos);
+        } else
             setProdutos(listarTodos);
         setAguardando(false);
     }
@@ -58,9 +66,13 @@ const Criar = () => {
     const pesquisarFornecedores = async () => {
         setAguardando(true);
         const listarTodos = await fornecedorService.listarTodos();
-        if (listarTodos.statusCode)
-            setRertorno(listarTodos);
-        else
+        if (listarTodos.statusCode) {
+            if (listarTodos.statusCode === 401){
+                fornecedorService.limparToken();
+                setIrPara({ rota: rotas.login, statusCode: listarTodos.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+            } else
+                setRetorno(listarTodos);
+        } else
             setFornecedores(listarTodos);
         setAguardando(false);
     }
@@ -69,9 +81,13 @@ const Criar = () => {
         setAguardando(true);
 
         const buscarProduto = await produtoService.buscarPorId(produto);
-        if (buscarProduto.statusCode)
-            setRertorno(buscarProduto);
-        else {
+        if (buscarProduto.statusCode) {
+            if (buscarProduto.statusCode === 401){
+                produtoService.limparToken();
+                setIrPara({ rota: rotas.login, statusCode: buscarProduto.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+            } else
+                setRetorno(buscarProduto);
+        } else {
             let listaAtual = itens;
             listaAtual.push(
                 {
@@ -92,12 +108,12 @@ const Criar = () => {
     }
 
     const criticas = () => {
-        if (!itens || itens.length === 0) return setRertorno({ statusCode: 400, mensagem: "Inclua pelo menos um item!" });
+        if (!itens || itens.length === 0) return setRetorno({ statusCode: 400, mensagem: "Inclua pelo menos um item!" });
         return true;
     }
 
-    if (formularioSucesso)
-        return <Navigate to={`${publicURL}${rotas.listaDePedidos}`} state={{ statusCode: 200, mensagem: 'Pedido cadastrado com sucesso!' }} replace />
+    if (irPara)
+        return <Navigate to={`${publicURL}${irPara.rota}`} state={{ statusCode: irPara.statusCode, mensagem: irPara.mensagem }} replace />
 
     return (
         <div>
