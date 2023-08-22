@@ -1,10 +1,11 @@
 import { api } from '../../core/Api';
 import errorHandler from '../../core/handler/Exception';
+import GenericService from '../GenericService';
 
-class PedidoService {
+class PedidoService extends GenericService {
 
     async alterar(id, dados) {
-        return await api()
+        return await api(this.getToken())
             .put(`/pedido/atualizar?codigoPedido=${id}`, { pedidoRequests: dados })
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
@@ -15,7 +16,7 @@ class PedidoService {
     }
 
     async apagarPorId(id) {
-        return await api()
+        return await api(this.getToken())
             .delete(`/pedido/apagar?codigoPedido=${id}`)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
@@ -26,7 +27,7 @@ class PedidoService {
     }
 
     async apagarPorIdPedido(codigoPedido, fornecedor, produto) {
-        return await api()
+        return await api(this.getToken())
             .delete(`/pedido/apagar?codigoPedido=${codigoPedido}&fornecedor=${fornecedor}&produto=${produto}`)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
@@ -37,7 +38,7 @@ class PedidoService {
     }
 
     async buscarPorId(id) {
-        return await api()
+        return await api(this.getToken())
             .get(`/pedido/por-id?codigoPedido=${id}`)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
@@ -48,7 +49,7 @@ class PedidoService {
     }
 
     async cadastrar(dados) {
-        return await api()
+        return await api(this.getToken())
             .post(`/pedido/cadastrar`, dados)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
@@ -59,7 +60,7 @@ class PedidoService {
     }
 
     async listarTodos() {
-        return await api()
+        return await api(this.getToken())
             .get(`/pedido/todos`)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;

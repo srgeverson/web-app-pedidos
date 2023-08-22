@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import { FormGroup, Label, Input, Row, Col } from 'reactstrap';
 import { publicURL, rotas } from '../../../../core/Config';
 import Alerta from '../../../components/Alerta';
@@ -16,6 +16,7 @@ const Alterar = () => {
     const [itens, setItens] = useState([]);
     const pedidoService = new PedidoService();
     const { id } = useParams();
+    const [irPara, setIrPara] = useState('');
 
     useEffect(() => {
         receberDadosPedido();
@@ -25,9 +26,13 @@ const Alterar = () => {
     const receberDadosPedido = async () => {
         setAguardando(true);
         const pedidoPorId = await pedidoService.buscarPorId(id);
-        if (pedidoPorId.statusCode)
-            setRetorno(pedidoPorId);
-        else {
+        if (pedidoPorId.statusCode) {
+            if (pedidoPorId.statusCode === 401) {
+                pedidoService.limparToken();
+                setIrPara({ rota: rotas.login, statusCode: pedidoPorId.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+            } else
+                setRetorno(pedidoPorId);
+        } else {
             if (pedidoPorId) {
                 const resumo = await pedidoService.montaResumoDeUmPedido(pedidoPorId);
                 setItens(pedidoPorId.itens)
@@ -38,6 +43,9 @@ const Alterar = () => {
         }
         setAguardando(false);
     }
+
+    if (irPara)
+        return <Navigate to={`${publicURL}${irPara.rota}`} state={{ statusCode: irPara.statusCode, mensagem: irPara.mensagem }} replace />
 
     return (
         <div>
