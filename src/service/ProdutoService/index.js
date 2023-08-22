@@ -1,10 +1,11 @@
 import { api } from '../../core/Api';
 import errorHandler from '../../core/handler/Exception';
+import GenericService from '../GenericService';
 
-class ProdutoService {
+class ProdutoService extends GenericService{
 
     async alterar(id, dados) {
-        return await api()
+        return await api(this.getToken())
             .put(`/produto/atualizar?codigo=${id}`, dados)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
@@ -15,7 +16,7 @@ class ProdutoService {
     }
 
     async apagarPorId(id) {
-        return await api()
+        return await api(this.getToken())
             .delete(`/produto/apagar?codigo=${id}`)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
@@ -26,7 +27,7 @@ class ProdutoService {
     }
 
     async buscarPorId(id) {
-        return await api()
+        return await api(this.getToken())
             .get(`/produto/por-codigo?codigo=${id}`)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
@@ -37,7 +38,7 @@ class ProdutoService {
     }
 
     async cadastrar(dados) {
-        return await api()
+        return await api(this.getToken())
             .post(`/produto/cadastrar`, dados)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;
@@ -48,7 +49,7 @@ class ProdutoService {
     }
 
     async listarTodos() {
-        return await api()
+        return await api(this.getToken())
             .get(`/produto/todos`)
             .then((callbackSuccess) => {
                 return callbackSuccess.data;

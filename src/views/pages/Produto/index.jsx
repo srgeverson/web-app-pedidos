@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { DropdownMenu, DropdownToggle, FormGroup, UncontrolledButtonDropdown } from 'reactstrap';
 import { publicURL, rotas } from '../../../core/Config';
 import { formataDataEHora, formataMoeda } from '../../../core/Utils'
@@ -20,6 +20,7 @@ const Produto = () => {
     const [confirmarExclusao, setConfirmarExclusao] = useState(false);
     const location = useLocation();
     const produdoService = new ProdutoService();
+    const [irPara, setIrPara] = useState('');
 
     useEffect(() => {
         if (location && location.state)
@@ -30,9 +31,13 @@ const Produto = () => {
     const pesquisarProdutos = async () => {
         setAguardando(true);
         const listarTodos = await produdoService.listarTodos();
-        if (listarTodos.statusCode)
-            setRetorno(listarTodos);
-        else
+        if (listarTodos.statusCode) {
+            if (listarTodos.statusCode === 401) {
+                produdoService.limparToken();
+                setIrPara({ rota: rotas.login, statusCode: listarTodos.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+            } else
+                setRetorno(listarTodos);
+        } else
             setProdutos(listarTodos);
         setAguardando(false);
     }
@@ -40,9 +45,13 @@ const Produto = () => {
     const apagarProduto = async () => {
         setAguardando(true);
         const apagar = await produdoService.apagarPorId(idParaApagar);
-        if (apagar.statusCode)
-            setRetorno(apagar);
-        else {
+        if (apagar.statusCode) {
+            if (apagar.statusCode === 401) {
+                produdoService.limparToken();
+                setIrPara({ rota: rotas.login, statusCode: apagar.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+            } else
+                setRetorno(apagar);
+        } else {
             setRetorno({ statusCode: 200, mensagem: 'Produto apagado com sucesso!' });
             setConfirmarExclusao(false);
             pesquisarProdutos();
@@ -54,6 +63,9 @@ const Produto = () => {
         setConfirmarExclusao(true);
         setIdParaApagar(id);
     }
+
+    if (irPara)
+        return <Navigate to={`${publicURL}${irPara.rota}`} state={{ statusCode: irPara.statusCode, mensagem: irPara.mensagem }} replace />
 
     return (
         <div>

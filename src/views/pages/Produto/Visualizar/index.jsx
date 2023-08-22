@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
 import ProdutoService from '../../../../service/ProdutoService';
 import Alerta from '../../../components/Alerta';
 import { publicURL, rotas } from '../../../../core/Config';
@@ -13,23 +13,31 @@ const Visualizar = () => {
     const produtoService = new ProdutoService();
     const [aguardando, setAguardando] = useState(false);
     const location = useLocation();
+    const [irPara, setIrPara] = useState('');
 
     useEffect(() => {
         if (location && location.state)
             setRetorno(location.state);
-        getUsuario(id);
+        getProduto(id);
         // eslint-disable-next-line
     }, []);
 
-    const getUsuario = async (id) => {
+    const getProduto = async (id) => {
         setAguardando(true);
         const produtoPorId = await produtoService.buscarPorId(id);
-        if (produtoPorId.statusCode) 
-            setRetorno(produtoPorId);
-        else
+        if (produtoPorId.statusCode) {
+            if (produtoPorId.statusCode === 401) {
+                produtoService.limparToken();
+                setIrPara({ rota: rotas.login, statusCode: produtoPorId.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+            } else
+                setRetorno(produtoPorId);
+        } else
             setProduto(produtoPorId);
         setAguardando(false);
     }
+
+    if (irPara)
+        return <Navigate to={`${publicURL}${irPara.rota}`} state={{ statusCode: irPara.statusCode, mensagem: irPara.mensagem }} replace />
 
     return (
         <div>
