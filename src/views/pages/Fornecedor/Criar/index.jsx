@@ -8,16 +8,16 @@ import FornecedorService from '../../../../service/FornecedorService';
 import ModalCarregando from '../../../components/ModalCarregando';
 
 const Criar = () => {
-    const [retorno, setRertorno] = useState('');
+    const [retorno, setRetorno] = useState('');
     const [cnpj, setCnpj] = useState('');
     const [razaoSocial, setRazaoSocial] = useState('');
     const [emailContato, setEmailContato] = useState('');
     const [uf, setUf] = useState('');
     const [nomeContato, setNomeContato] = useState('');
     const [aguardando, setAguardando] = useState(false);
-    const [formularioSucesso, setFormularioSucesso] = useState(false);
     const ufs = ['RO', 'AC', 'AM', 'RR', 'PA', 'AP', 'TO', 'MA', 'PI', 'CE', 'RN', 'PB', 'PE', 'AL', 'SE', 'BA', 'MG', 'ES', 'RJ', 'SP', 'PR', 'SC', 'RS', 'MS', 'MT', 'GO', 'DF'];
     const fornecedorService = new FornecedorService();
+    const [irPara, setIrPara] = useState('');
 
     const cadastrarFornecedor = async () => {
         if (!criticas())
@@ -25,21 +25,25 @@ const Criar = () => {
 
         setAguardando(true);
         const fornecedorCadastrado = await fornecedorService.cadastrar({ cnpj, razaoSocial, nomeContato, emailContato, uf });
-        if (fornecedorCadastrado.statusCode)
-            setRertorno(fornecedorCadastrado);
-        else
-            setFormularioSucesso(true);
+        if (fornecedorCadastrado.statusCode) {
+            if (fornecedorCadastrado.statusCode === 401){
+                fornecedorService.limparToken();
+                setIrPara({ rota: rotas.paginaInicial, statusCode: fornecedorCadastrado.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+            } else
+                setRetorno(fornecedorCadastrado);
+        } else 
+            setIrPara({ rota: rotas.listaDeFornecedor, statusCode: 200, mensagem: 'Fornecedor cadastrado com sucesso!' });
 
         setAguardando(false);
     }
 
     const criticas = () => {
-        if (!cnpj) return setRertorno({ statusCode: 400, mensagem: "Preencha o CNPJ!" });
+        if (!cnpj) return setRetorno({ statusCode: 400, mensagem: "Preencha o CNPJ!" });
         return true;
     }
 
-    if (formularioSucesso)
-        return <Navigate to={`${publicURL}${rotas.listaDeFornecedor}`} state={{ statusCode: 200, mensagem: 'Fornecedor cadastrado com sucesso!' }} replace />
+    if (irPara)
+        return <Navigate to={`${publicURL}${irPara.rota}`} state={{ statusCode: irPara.statusCode, mensagem: irPara.mensagem }} replace />
 
     return (
         <div>

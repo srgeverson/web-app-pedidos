@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
 import FornecedorService from '../../../../service/FornecedorService';
 import Alerta from '../../../components/Alerta';
 import { publicURL, rotas } from '../../../../core/Config';
 import ModalCarregando from '../../../components/ModalCarregando';
 
 const Visualizar = () => {
-    const [retorno, setRertorno] = useState('');
+    const [retorno, setRetorno] = useState('');
     const { id } = useParams();
     const [fornecedor, setFornecedor] = useState(null);
     const fornecedorService = new FornecedorService();
     const [aguardando, setAguardando] = useState(false);
     const location = useLocation();
+    const [irPara, setIrPara] = useState('');
 
     useEffect(() => {
         if (location && location.state) 
-            setRertorno(location.state);
+            setRetorno(location.state);
         getUsuario(id);
         // eslint-disable-next-line
     }, []);
@@ -23,12 +24,19 @@ const Visualizar = () => {
     const getUsuario = async (id) => {
         setAguardando(true);
         const fornecedorPorId = await fornecedorService.buscarPorId(id);
-        if (fornecedorPorId.statusCode) 
-            setRertorno(fornecedor);
-        else 
+        if (fornecedorPorId.statusCode) {
+            if (fornecedorPorId.statusCode === 401){
+                fornecedorService.limparToken();
+                setIrPara({ rota: rotas.paginaInicial, statusCode: fornecedorPorId.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+            } else
+                setRetorno(fornecedorPorId);
+        } else 
             setFornecedor(fornecedorPorId);
         setAguardando(false);
     }
+
+    if (irPara)
+        return <Navigate to={`${publicURL}${irPara.rota}`} state={{ statusCode: irPara.statusCode, mensagem: irPara.mensagem }} replace />
 
     return (
         <div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { DropdownMenu, DropdownToggle, FormGroup, UncontrolledButtonDropdown } from 'reactstrap';
 import { publicURL, rotas } from '../../../core/Config';
 import Alerta from '../../components/Alerta';
@@ -12,26 +12,31 @@ import ModalCarregando from '../../components/ModalCarregando';
 import FornecedorService from '../../../service/FornecedorService';
 
 const Fornecedor = () => {
-    const [retorno, setRertorno] = useState('');
+    const [retorno, setRetorno] = useState('');
     const [aguardando, setAguardando] = useState(false);
     const [fornecedores, setFornecedores] = useState([]);
     const [idParaApagar, setIdParaApagar] = useState('');
     const [confirmarExclusao, setConfirmarExclusao] = useState(false);
     const location = useLocation();
     const fornecedorService = new FornecedorService();
+    const [irPara, setIrPara] = useState('');
 
     useEffect(() => {
         if (location && location.state)
-            setRertorno(location.state);
+            setRetorno(location.state);
         // eslint-disable-next-line
     }, []);
 
     const pesquisarFornecedores = async () => {
         setAguardando(true);
         const listarTodos = await fornecedorService.listarTodos();
-        if (listarTodos.statusCode)
-            setRertorno(listarTodos);
-        else
+        if (listarTodos.statusCode) {
+            if (listarTodos.statusCode === 401){
+                fornecedorService.limparToken();
+                setIrPara({ rota: rotas.login, statusCode: listarTodos.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+            } else
+                setRetorno(listarTodos);
+        } else
             setFornecedores(listarTodos);
         setAguardando(false);
     }
@@ -40,9 +45,9 @@ const Fornecedor = () => {
         setAguardando(true);
         const apagar = await fornecedorService.apagarPorId(idParaApagar);
         if (apagar.statusCode)
-            setRertorno(apagar);
+            setRetorno(apagar);
         else {
-            setRertorno({ statusCode: 200, mensagem: 'Fornecedor apagado com sucesso!' });
+            setRetorno({ statusCode: 200, mensagem: 'Fornecedor apagado com sucesso!' });
             setConfirmarExclusao(false);
             pesquisarFornecedores();
         }
@@ -53,6 +58,9 @@ const Fornecedor = () => {
         setConfirmarExclusao(true);
         setIdParaApagar(id);
     }
+
+    if (irPara)
+        return <Navigate to={`${publicURL}${irPara.rota}`} state={{ statusCode: irPara.statusCode, mensagem: irPara.mensagem }} replace />
 
     return (
         <div>

@@ -9,6 +9,7 @@ export const rotas = {
     listaDeFornecedor: '/fornecedores',
     listaDePedidos: '/pedidos',
     listaDeProdutos: '/produtos',
+    login: '/',
     paginaInicial: '/',
     paginaDesconhecida: '*',
     visualizacaoDeFornecedor: '/fornecedores-visualizar/',

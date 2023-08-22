@@ -43,6 +43,9 @@ $ echo "PUBLIC_URL=URL_DA_APLICACAO_AQUI" >> .ENV
 $ echo "SERVER_URL=URL_DA_API_AQUI" >> .ENV
 $ echo "SERVER_PORT=PORTA_DA_API_AQUI" >> .ENV
 
+# Autenticação Base64
+$ npm install --save base-64
+
 # Rodar o projeto
 $ npm start
 
