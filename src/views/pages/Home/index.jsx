@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import UsuarioService from '../../../service/UsuarioService';
 import Alerta from '../../components/Alerta';
 import ModalCarregando from '../../components/ModalCarregando';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
 const Home = () => {
 
@@ -21,10 +21,8 @@ const Home = () => {
     const gerarToken = async () => {
         setAguardando(true);
         const tokenExistente = usuarioService.getToken()
-        console.log(tokenExistente)
         if (!tokenExistente) {
             const tokenGerado = await usuarioService.token();
-            console.log(tokenGerado);
             if (tokenGerado.statusCode)
                 setRetorno(tokenGerado);
             else

@@ -9,8 +9,6 @@ const client_id = process.env.CLIENT_ID ? process.env.CLIENT_ID : 'web-app-pedid
 const client_secret = process.env.CLIENT_SECRET ? process.env.CLIENT_SECRET : '7cf8096a9f73781153694fbb7f834eaa';
 
 const api = (token) => {
-    console.log('api...')
-    console.log(token)
     return axios.create({
         baseURL: url_api,
         headers: {
