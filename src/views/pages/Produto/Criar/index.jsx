@@ -8,7 +8,7 @@ import ProdutoService from '../../../../service/ProdutoService';
 import ModalCarregando from '../../../components/ModalCarregando';
 
 const Criar = () => {
-    const [retorno, setRertorno] = useState('');
+    const [retorno, setRetorno] = useState('');
     const [descricao, setDescricao] = useState('');
     const [valor, setValor] = useState('');
     const [aguardando, setAguardando] = useState(false);
@@ -22,7 +22,7 @@ const Criar = () => {
         setAguardando(true);
         const usuarioCadastrado = await produtoService.cadastrar({ descricao, valor });
         if (usuarioCadastrado.statusCode)
-            setRertorno(usuarioCadastrado);
+            setRetorno(usuarioCadastrado);
         else
             setFormularioSucesso(true);
 

@@ -14,7 +14,7 @@ import ModalCarregando from '../../../components/ModalCarregando';
 import { formataMoeda } from '../../../../core/Utils';
 
 const Alterar = () => {
-    const [retorno, setRertorno] = useState('');
+    const [retorno, setRetorno] = useState('');
     const [aguardando, setAguardando] = useState(false);
     const [formularioSucesso, setFormularioSucesso] = useState(false);
     const [confirmarExclusao, setConfirmarExclusao] = useState(false);
@@ -42,7 +42,7 @@ const Alterar = () => {
         setAguardando(true);
         const pedidoPorId = await pedidoService.buscarPorId(id);
         if (pedidoPorId.statusCode) 
-            setRertorno(pedidoPorId);
+            setRetorno(pedidoPorId);
         else {
             if (pedidoPorId) {
                 let itens = pedidoPorId.itens.map(i => {
@@ -68,7 +68,7 @@ const Alterar = () => {
         setAguardando(true);
         const pedidoAlterado = await pedidoService.alterar(id, itens);
         if (pedidoAlterado.statusCode) 
-            setRertorno(pedidoAlterado);
+            setRetorno(pedidoAlterado);
         else 
             setFormularioSucesso(true);
 
@@ -83,7 +83,7 @@ const Alterar = () => {
         setAguardando(true);
         const listarTodos = await produtoService.listarTodos();
         if (listarTodos.statusCode) 
-            setRertorno(listarTodos);
+            setRetorno(listarTodos);
         else
             setProdutos(listarTodos);
         setAguardando(false);
@@ -93,7 +93,7 @@ const Alterar = () => {
         setAguardando(true);
         const listarTodos = await fornecedorService.listarTodos();
         if (listarTodos.statusCode)
-            setRertorno(listarTodos);
+            setRetorno(listarTodos);
         else
             setFornecedores(listarTodos);
         setAguardando(false);
@@ -103,9 +103,9 @@ const Alterar = () => {
         setAguardando(true);
         const apagar = await pedidoService.apagarPorIdPedido(codigoPedido, fornecedor, codigoProduto);
         if (apagar.statusCode) 
-            setRertorno(apagar);
+            setRetorno(apagar);
         else {
-            setRertorno({statusCode:200, mensagem: 'Item removido com sucesso!' });
+            setRetorno({statusCode:200, mensagem: 'Item removido com sucesso!' });
             setConfirmarExclusao(false);
             receberDadosPedido();
         }
@@ -117,7 +117,7 @@ const Alterar = () => {
 
         const buscarProduto = await produtoService.buscarPorId(produto);
         if (buscarProduto.statusCode) 
-            setRertorno(buscarProduto);
+            setRetorno(buscarProduto);
         else {
             let listaAtual = itens;
             listaAtual.push(

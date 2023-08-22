@@ -13,7 +13,7 @@ import ModalCarregando from '../../components/ModalCarregando';
 import ProdutoService from '../../../service/ProdutoService';
 
 const Produto = () => {
-    const [retorno, setRertorno] = useState('');
+    const [retorno, setRetorno] = useState('');
     const [aguardando, setAguardando] = useState(false);
     const [produtos, setProdutos] = useState([]);
     const [idParaApagar, setIdParaApagar] = useState('');
@@ -23,7 +23,7 @@ const Produto = () => {
 
     useEffect(() => {
         if (location && location.state)
-            setRertorno(location.state);
+            setRetorno(location.state);
         // eslint-disable-next-line
     }, []);
 
@@ -31,7 +31,7 @@ const Produto = () => {
         setAguardando(true);
         const listarTodos = await produdoService.listarTodos();
         if (listarTodos.statusCode)
-            setRertorno(listarTodos);
+            setRetorno(listarTodos);
         else
             setProdutos(listarTodos);
         setAguardando(false);
@@ -41,9 +41,9 @@ const Produto = () => {
         setAguardando(true);
         const apagar = await produdoService.apagarPorId(idParaApagar);
         if (apagar.statusCode)
-            setRertorno(apagar);
+            setRetorno(apagar);
         else {
-            setRertorno({ statusCode: 200, mensagem: 'Produto apagado com sucesso!' });
+            setRetorno({ statusCode: 200, mensagem: 'Produto apagado com sucesso!' });
             setConfirmarExclusao(false);
             pesquisarProdutos();
         }

@@ -8,7 +8,7 @@ import ModalCarregando from '../../../components/ModalCarregando';
 import { formataDataEHora, formataMoeda } from '../../../../core/Utils';
 
 const Alterar = () => {
-    const [retorno, setRertorno] = useState('');
+    const [retorno, setRetorno] = useState('');
     const [dataPedido, setDataPedido] = useState('');
     const [valorTotalPedido, setValorTotalPedido] = useState('');
     const [aguardando, setAguardando] = useState(false);
@@ -26,7 +26,7 @@ const Alterar = () => {
         setAguardando(true);
         const pedidoPorId = await pedidoService.buscarPorId(id);
         if (pedidoPorId.statusCode)
-            setRertorno(pedidoPorId);
+            setRetorno(pedidoPorId);
         else {
             if (pedidoPorId) {
                 const resumo = await pedidoService.montaResumoDeUmPedido(pedidoPorId);

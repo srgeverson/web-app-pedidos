@@ -12,7 +12,7 @@ import ModalCarregando from '../../../components/ModalCarregando';
 import { formataMoeda } from '../../../../core/Utils';
 
 const Criar = () => {
-    const [retorno, setRertorno] = useState('');
+    const [retorno, setRetorno] = useState('');
     const [aguardando, setAguardando] = useState(false);
     const [formularioSucesso, setFormularioSucesso] = useState(false);
     const [produtos, setProdutos] = useState([]);
@@ -32,7 +32,7 @@ const Criar = () => {
         setAguardando(true);
         const usuarioCadastrado = await pedidoService.cadastrar({ pedidoRequests: itens });
         if (usuarioCadastrado.statusCode)
-            setRertorno(usuarioCadastrado);
+            setRetorno(usuarioCadastrado);
         else
             setFormularioSucesso(true);
 
@@ -49,7 +49,7 @@ const Criar = () => {
         setAguardando(true);
         const listarTodos = await produtoService.listarTodos();
         if (listarTodos.statusCode)
-            setRertorno(listarTodos);
+            setRetorno(listarTodos);
         else
             setProdutos(listarTodos);
         setAguardando(false);
@@ -59,7 +59,7 @@ const Criar = () => {
         setAguardando(true);
         const listarTodos = await fornecedorService.listarTodos();
         if (listarTodos.statusCode)
-            setRertorno(listarTodos);
+            setRetorno(listarTodos);
         else
             setFornecedores(listarTodos);
         setAguardando(false);
@@ -70,7 +70,7 @@ const Criar = () => {
 
         const buscarProduto = await produtoService.buscarPorId(produto);
         if (buscarProduto.statusCode)
-            setRertorno(buscarProduto);
+            setRetorno(buscarProduto);
         else {
             let listaAtual = itens;
             listaAtual.push(
@@ -92,7 +92,7 @@ const Criar = () => {
     }
 
     const criticas = () => {
-        if (!itens || itens.length === 0) return setRertorno({ statusCode: 400, mensagem: "Inclua pelo menos um item!" });
+        if (!itens || itens.length === 0) return setRetorno({ statusCode: 400, mensagem: "Inclua pelo menos um item!" });
         return true;
     }
 

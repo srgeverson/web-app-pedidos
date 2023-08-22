@@ -13,7 +13,7 @@ import ModalCarregando from '../../components/ModalCarregando';
 import PedidoService from '../../../service/PedidoService';
 
 const Pedido = () => {
-    const [retorno, setRertorno] = useState('');
+    const [retorno, setRetorno] = useState('');
     const [aguardando, setAguardando] = useState(false);
     const [pedidos, setPedidos] = useState([]);
     const [idParaApagar, setIdParaApagar] = useState('');
@@ -23,7 +23,7 @@ const Pedido = () => {
 
     useEffect(() => {
         if (location && location.state)
-            setRertorno(location.state);
+            setRetorno(location.state);
         // eslint-disable-next-line
     }, []);
 
@@ -32,7 +32,7 @@ const Pedido = () => {
         const listarTodos = await pedidoService.listarTodos();
         const resumo = await pedidoService.montaResumoPedido(listarTodos);
         if (listarTodos.statusCode)
-            setRertorno(listarTodos.statusCode);
+            setRetorno(listarTodos.statusCode);
         else
             setPedidos(resumo);
         setAguardando(false);
@@ -42,9 +42,9 @@ const Pedido = () => {
         setAguardando(true);
         const apagar = await pedidoService.apagarPorId(idParaApagar);
         if (apagar.statusCode)
-            setRertorno(apagar);
+            setRetorno(apagar);
         else {
-            setRertorno({ statusCode: 200, mensagem: 'Pedido apagado com sucesso!' });
+            setRetorno({ statusCode: 200, mensagem: 'Pedido apagado com sucesso!' });
             setConfirmarExclusao(false);
             pesquisarPedidos();
         }

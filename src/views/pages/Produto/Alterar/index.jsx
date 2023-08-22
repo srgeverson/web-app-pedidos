@@ -8,7 +8,7 @@ import ProdutoService from '../../../../service/ProdutoService';
 import ModalCarregando from '../../../components/ModalCarregando';
 
 const Alterar = () => {
-    const [retorno, setRertorno] = useState('');
+    const [retorno, setRetorno] = useState('');
     const [codigo, setCodigo] = useState('');
     const [descricao, setDescricao] = useState('');
     const [valor, setValor] = useState('');
@@ -26,7 +26,7 @@ const Alterar = () => {
         setAguardando(true);
         const fornecedorPorId = await frodutoService.buscarPorId(id);
         if (fornecedorPorId.statusCode)
-            setRertorno(fornecedorPorId);
+            setRetorno(fornecedorPorId);
         else {
             if (fornecedorPorId) {
                 setCodigo(fornecedorPorId.codigo);
@@ -45,7 +45,7 @@ const Alterar = () => {
         const fornecedorAlterado = await frodutoService.alterar(id, { codigo: id, descricao, valor });
 
         if (fornecedorAlterado.statusCode)
-            setRertorno(retorno);
+            setRetorno(retorno);
         else
             setFormularioSucesso(true);
 

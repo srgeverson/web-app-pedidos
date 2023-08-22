@@ -7,7 +7,7 @@ import ModalCarregando from '../../../components/ModalCarregando';
 import { formataDataEHora, formataMoeda } from '../../../../core/Utils';
 
 const Visualizar = () => {
-    const [retorno, setRertorno] = useState('');
+    const [retorno, setRetorno] = useState('');
     const { id } = useParams();
     const [produto, setProduto] = useState(null);
     const produtoService = new ProdutoService();
@@ -16,7 +16,7 @@ const Visualizar = () => {
 
     useEffect(() => {
         if (location && location.state)
-            setRertorno(location.state);
+            setRetorno(location.state);
         getUsuario(id);
         // eslint-disable-next-line
     }, []);
@@ -25,7 +25,7 @@ const Visualizar = () => {
         setAguardando(true);
         const produtoPorId = await produtoService.buscarPorId(id);
         if (produtoPorId.statusCode) 
-            setRertorno(produtoPorId);
+            setRetorno(produtoPorId);
         else
             setProduto(produtoPorId);
         setAguardando(false);
