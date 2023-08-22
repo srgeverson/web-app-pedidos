@@ -31,7 +31,7 @@ const Fornecedor = () => {
         setAguardando(true);
         const listarTodos = await fornecedorService.listarTodos();
         if (listarTodos.statusCode) {
-            if (listarTodos.statusCode === 401){
+            if (listarTodos.statusCode === 401) {
                 fornecedorService.limparToken();
                 setIrPara({ rota: rotas.login, statusCode: listarTodos.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
             } else
@@ -44,9 +44,13 @@ const Fornecedor = () => {
     const apagarFornecedor = async () => {
         setAguardando(true);
         const apagar = await fornecedorService.apagarPorId(idParaApagar);
-        if (apagar.statusCode)
-            setRetorno(apagar);
-        else {
+        if (apagar.statusCode) {
+            if (apagar.statusCode === 401) {
+                fornecedorService.limparToken();
+                setIrPara({ rota: rotas.login, statusCode: apagar.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+            } else
+                setRetorno(apagar);
+        } else {
             setRetorno({ statusCode: 200, mensagem: 'Fornecedor apagado com sucesso!' });
             setConfirmarExclusao(false);
             pesquisarFornecedores();

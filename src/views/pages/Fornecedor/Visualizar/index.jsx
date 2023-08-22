@@ -27,7 +27,7 @@ const Visualizar = () => {
         if (fornecedorPorId.statusCode) {
             if (fornecedorPorId.statusCode === 401){
                 fornecedorService.limparToken();
-                setIrPara({ rota: rotas.paginaInicial, statusCode: fornecedorPorId.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+                setIrPara({ rota: rotas.login, statusCode: fornecedorPorId.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
             } else
                 setRetorno(fornecedorPorId);
         } else 

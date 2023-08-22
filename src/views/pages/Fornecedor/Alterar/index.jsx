@@ -52,7 +52,7 @@ const Alterar = () => {
         if (fornecedorAlterado.statusCode) {
             if (fornecedorAlterado.statusCode === 401){
                 fornecedorService.limparToken();
-                setIrPara({ rota: rotas.paginaInicial, statusCode: fornecedorAlterado.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+                setIrPara({ rota: rotas.login, statusCode: fornecedorAlterado.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
             } else
                 setRetorno(fornecedorAlterado);
         } else 

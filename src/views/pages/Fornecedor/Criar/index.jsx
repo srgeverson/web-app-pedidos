@@ -28,7 +28,7 @@ const Criar = () => {
         if (fornecedorCadastrado.statusCode) {
             if (fornecedorCadastrado.statusCode === 401){
                 fornecedorService.limparToken();
-                setIrPara({ rota: rotas.paginaInicial, statusCode: fornecedorCadastrado.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
+                setIrPara({ rota: rotas.login, statusCode: fornecedorCadastrado.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
             } else
                 setRetorno(fornecedorCadastrado);
         } else 
