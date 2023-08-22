@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import UsuarioService from '../../../service/UsuarioService';
 import Alerta from '../../components/Alerta';
 import ModalCarregando from '../../components/ModalCarregando';
-import { Navigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const Home = () => {
 
