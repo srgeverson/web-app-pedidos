@@ -11,6 +11,7 @@ import BotaoPesquisar from '../../components/BotaoPesquisar';
 import ModalApagar from '../../components/ModalApagar';
 import ModalCarregando from '../../components/ModalCarregando';
 import ProdutoService from '../../../service/ProdutoService';
+import { useAppContext } from '../../../core/Context';
 
 const Produto = () => {
     const [retorno, setRetorno] = useState('');
@@ -21,6 +22,7 @@ const Produto = () => {
     const location = useLocation();
     const produdoService = new ProdutoService();
     const [irPara, setIrPara] = useState('');
+    const { token } = useAppContext();
 
     useEffect(() => {
         if (location && location.state)
@@ -30,7 +32,7 @@ const Produto = () => {
 
     const pesquisarProdutos = async () => {
         setAguardando(true);
-        const listarTodos = await produdoService.listarTodos();
+        const listarTodos = await produdoService.listarTodos(token, '/produto/todos');
         if (listarTodos.statusCode) {
             if (listarTodos.statusCode === 401) {
                 produdoService.limparToken();
