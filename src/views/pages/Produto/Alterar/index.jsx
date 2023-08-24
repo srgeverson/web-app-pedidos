@@ -6,6 +6,7 @@ import BotaoConfirmar from '../../../components/BotaoConfirmar';
 import Alerta from '../../../components/Alerta';
 import ProdutoService from '../../../../service/ProdutoService';
 import ModalCarregando from '../../../components/ModalCarregando';
+import { useAppContext } from '../../../../core/Context';
 
 const Alterar = () => {
     const [retorno, setRetorno] = useState('');
@@ -16,6 +17,7 @@ const Alterar = () => {
     const produtoService = new ProdutoService();
     const { id } = useParams();
     const [irPara, setIrPara] = useState('');
+    const { token, handleLogout } = useAppContext();
 
     useEffect(() => {
         receberDadosProduto();
@@ -24,7 +26,7 @@ const Alterar = () => {
 
     const receberDadosProduto = async () => {
         setAguardando(true);
-        const fornecedorPorId = await produtoService.buscarPorId(id);
+        const fornecedorPorId = await produtoService.buscarPorId(token, '/produto/por-codigo', { codigo: id });
         if (fornecedorPorId.statusCode)
             setRetorno(fornecedorPorId);
         else {
@@ -42,13 +44,12 @@ const Alterar = () => {
             return;
 
         setAguardando(true);
-        const produtoAlterado = await produtoService.alterar(id, { codigo: id, descricao, valor });
+        const produtoAlterado = await produtoService.alterar(token, '/produto/atualizar', { codigo: id }, { codigo: id, descricao, valor });
 
         if (produtoAlterado.statusCode) {
-            if (produtoAlterado.statusCode === 401) {
-                produtoService.limparToken();
-                setIrPara({ rota: rotas.login, statusCode: produtoAlterado.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
-            } else
+            if (produtoAlterado.statusCode === 401)
+                handleLogout();
+            else
                 setRetorno(produtoAlterado);
         } else
             setIrPara({ rota: rotas.listaDeFornecedor, statusCode: 200, mensagem: 'Produto alterado com sucesso!' });

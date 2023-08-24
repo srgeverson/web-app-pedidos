@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import ProdutoService from '../../../../service/ProdutoService';
 import Alerta from '../../../components/Alerta';
 import { publicURL, rotas } from '../../../../core/Config';
 import ModalCarregando from '../../../components/ModalCarregando';
 import { formataDataEHora, formataMoeda } from '../../../../core/Utils';
+import { useAppContext } from '../../../../core/Context';
 
 const Visualizar = () => {
     const [retorno, setRetorno] = useState('');
@@ -13,7 +14,7 @@ const Visualizar = () => {
     const produtoService = new ProdutoService();
     const [aguardando, setAguardando] = useState(false);
     const location = useLocation();
-    const [irPara, setIrPara] = useState('');
+    const { token, handleLogout } = useAppContext();
 
     useEffect(() => {
         if (location && location.state)
@@ -24,20 +25,16 @@ const Visualizar = () => {
 
     const getProduto = async (id) => {
         setAguardando(true);
-        const produtoPorId = await produtoService.buscarPorId(id);
+        const produtoPorId = await produtoService.buscarPorId(token, '/produto/por-codigo', { codigo: id });
         if (produtoPorId.statusCode) {
-            if (produtoPorId.statusCode === 401) {
-                produtoService.limparToken();
-                setIrPara({ rota: rotas.login, statusCode: produtoPorId.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
-            } else
+            if (produtoPorId.statusCode === 401) 
+                handleLogout();
+            else
                 setRetorno(produtoPorId);
         } else
             setProduto(produtoPorId);
         setAguardando(false);
     }
-
-    if (irPara)
-        return <Navigate to={`${publicURL}${irPara.rota}`} state={{ statusCode: irPara.statusCode, mensagem: irPara.mensagem }} replace />
 
     return (
         <div>

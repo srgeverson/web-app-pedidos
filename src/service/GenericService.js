@@ -2,7 +2,7 @@ import { api } from "../core/Api";
 import errorHandler from "../core/handler/Exception";
 
 class GenericService {
-    
+
     async alterar(token, endpoint, id, dados) {
         return await api(token)
             .put(`${endpoint}?${this.retornaId(id)}`, dados)
@@ -58,28 +58,33 @@ class GenericService {
             });
     }
 
+    //migrar para contet API
     getToken() {
         return localStorage.getItem('token');
     }
 
+    //migrar para contet API
     limparToken() {
         localStorage.removeItem('token');
     }
 
+    //migrar para contet API
     salvarToken(accessToken) {
         localStorage.setItem('token', JSON.stringify(accessToken));
     }
 
     retornaId(id) {
         let resultado = [];
-        if (typeof yourVariable === 'object') {
+        if (typeof id === 'object') {
             for (let i in id) {
                 if (id.hasOwnProperty(i))
                     resultado.push(`${i}=${id[i]}`);
             }
         } else
             resultado.push(`id=${id}`);
-        return resultado.join('&');
+
+        let ids = resultado.join('&');
+        return ids;
     }
 }
 
