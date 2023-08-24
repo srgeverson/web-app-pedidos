@@ -9,14 +9,14 @@ import ModalCarregando from '../../../components/ModalCarregando';
 import { useAppContext } from '../../../../core/Context';
 
 const Alterar = () => {
-    const [retorno, setRetorno] = useState('');
-    const [codigo, setCodigo] = useState('');
-    const [descricao, setDescricao] = useState('');
-    const [valor, setValor] = useState('');
+    const [retorno, setRetorno] = useState(undefined);
+    const [codigo, setCodigo] = useState(undefined);
+    const [descricao, setDescricao] = useState(undefined);
+    const [valor, setValor] = useState(undefined);
     const [aguardando, setAguardando] = useState(false);
     const produtoService = new ProdutoService();
     const { id } = useParams();
-    const [irPara, setIrPara] = useState('');
+    const [irPara, setIrPara] = useState(undefined);
     const { token, handleLogout } = useAppContext();
 
     useEffect(() => {

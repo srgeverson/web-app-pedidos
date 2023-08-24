@@ -8,7 +8,7 @@ import { formataDataEHora, formataMoeda } from '../../../../core/Utils';
 import { useAppContext } from '../../../../core/Context';
 
 const Visualizar = () => {
-    const [retorno, setRetorno] = useState('');
+    const [retorno, setRetorno] = useState(undefined);
     const { id } = useParams();
     const [produto, setProduto] = useState(null);
     const produtoService = new ProdutoService();

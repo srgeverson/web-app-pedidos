@@ -8,15 +8,15 @@ import ModalCarregando from '../../../components/ModalCarregando';
 import { formataDataEHora, formataMoeda } from '../../../../core/Utils';
 
 const Alterar = () => {
-    const [retorno, setRetorno] = useState('');
-    const [dataPedido, setDataPedido] = useState('');
-    const [valorTotalPedido, setValorTotalPedido] = useState('');
+    const [retorno, setRetorno] = useState(undefined);
+    const [dataPedido, setDataPedido] = useState(undefined);
+    const [valorTotalPedido, setValorTotalPedido] = useState(undefined);
     const [aguardando, setAguardando] = useState(false);
-    const [quantidadeTotalProdutos, setQuantidadeTotalProdutos] = useState('');
+    const [quantidadeTotalProdutos, setQuantidadeTotalProdutos] = useState(undefined);
     const [itens, setItens] = useState([]);
     const pedidoService = new PedidoService();
     const { id } = useParams();
-    const [irPara, setIrPara] = useState('');
+    const [irPara, setIrPara] = useState(undefined);
 
     useEffect(() => {
         receberDadosPedido();

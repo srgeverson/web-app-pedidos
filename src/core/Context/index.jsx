@@ -6,7 +6,7 @@ const AppContext = createContext();
 
 const AuthorizeContext = ({ children }) => {
 
-    const [token, setToken] = useState('');
+    const [token, setToken] = useState(undefined);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

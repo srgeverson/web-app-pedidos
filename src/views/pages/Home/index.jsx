@@ -8,7 +8,7 @@ import { useAppContext } from '../../../core/Context';
 const Home = () => {
 
     const usuarioService = new UsuarioService();
-    const [retorno, setRetorno] = useState('');
+    const [retorno, setRetorno] = useState(undefined);
     const [aguardando, setAguardando] = useState(false);
     const location = useLocation();
     const { salvarToken, token } = useAppContext();

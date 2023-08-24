@@ -6,13 +6,13 @@ import { publicURL, rotas } from '../../../../core/Config';
 import ModalCarregando from '../../../components/ModalCarregando';
 
 const Visualizar = () => {
-    const [retorno, setRetorno] = useState('');
+    const [retorno, setRetorno] = useState(undefined);
     const { id } = useParams();
     const [fornecedor, setFornecedor] = useState(null);
     const fornecedorService = new FornecedorService();
     const [aguardando, setAguardando] = useState(false);
     const location = useLocation();
-    const [irPara, setIrPara] = useState('');
+    const [irPara, setIrPara] = useState(undefined);
 
     useEffect(() => {
         if (location && location.state) 

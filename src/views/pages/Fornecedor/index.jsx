@@ -12,14 +12,14 @@ import ModalCarregando from '../../components/ModalCarregando';
 import FornecedorService from '../../../service/FornecedorService';
 
 const Fornecedor = () => {
-    const [retorno, setRetorno] = useState('');
+    const [retorno, setRetorno] = useState(undefined);
     const [aguardando, setAguardando] = useState(false);
     const [fornecedores, setFornecedores] = useState([]);
-    const [idParaApagar, setIdParaApagar] = useState('');
+    const [idParaApagar, setIdParaApagar] = useState(undefined);
     const [confirmarExclusao, setConfirmarExclusao] = useState(false);
     const location = useLocation();
     const fornecedorService = new FornecedorService();
-    const [irPara, setIrPara] = useState('');
+    const [irPara, setIrPara] = useState(undefined);
 
     useEffect(() => {
         if (location && location.state)

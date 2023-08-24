@@ -9,12 +9,12 @@ import ModalCarregando from '../../../components/ModalCarregando';
 import { useAppContext } from '../../../../core/Context';
 
 const Criar = () => {
-    const [retorno, setRetorno] = useState('');
-    const [descricao, setDescricao] = useState('');
-    const [valor, setValor] = useState('');
+    const [retorno, setRetorno] = useState(undefined);
+    const [descricao, setDescricao] = useState(undefined);
+    const [valor, setValor] = useState(undefined);
     const [aguardando, setAguardando] = useState(false);
     const produtoService = new ProdutoService();
-    const [irPara, setIrPara] = useState('');
+    const [irPara, setIrPara] = useState(undefined);
     const { token, handleLogout } = useAppContext();
 
     const cadastrarProduto = async () => {

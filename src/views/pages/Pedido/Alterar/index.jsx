@@ -14,22 +14,22 @@ import ModalCarregando from '../../../components/ModalCarregando';
 import { formataMoeda } from '../../../../core/Utils';
 
 const Alterar = () => {
-    const [retorno, setRetorno] = useState('');
+    const [retorno, setRetorno] = useState(undefined);
     const [aguardando, setAguardando] = useState(false);
     const [confirmarExclusao, setConfirmarExclusao] = useState(false);
     const [produtos, setProdutos] = useState([]);
-    const [produto, setProduto] = useState('');
+    const [produto, setProduto] = useState(undefined);
     const [fornecedores, setFornecedores] = useState([]);
-    const [fornecedor, setFornecedor] = useState('');
-    const [quantidade, setQuantidade] = useState('');
-    const [codigoPedido, setCodigoPedido] = useState('');
-    const [codigoProduto, setCodigoProduto] = useState('');
+    const [fornecedor, setFornecedor] = useState(undefined);
+    const [quantidade, setQuantidade] = useState(undefined);
+    const [codigoPedido, setCodigoPedido] = useState(undefined);
+    const [codigoProduto, setCodigoProduto] = useState(undefined);
     const [itens, setItens] = useState([]);
     const pedidoService = new PedidoService();
     const produtoService = new ProdutoService();
     const fornecedorService = new FornecedorService();
     const { id } = useParams();
-    const [irPara, setIrPara] = useState('');
+    const [irPara, setIrPara] = useState(undefined);
 
     useEffect(() => {
         receberDadosPedido();

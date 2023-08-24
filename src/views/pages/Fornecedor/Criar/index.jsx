@@ -8,16 +8,16 @@ import FornecedorService from '../../../../service/FornecedorService';
 import ModalCarregando from '../../../components/ModalCarregando';
 
 const Criar = () => {
-    const [retorno, setRetorno] = useState('');
-    const [cnpj, setCnpj] = useState('');
-    const [razaoSocial, setRazaoSocial] = useState('');
-    const [emailContato, setEmailContato] = useState('');
-    const [uf, setUf] = useState('');
-    const [nomeContato, setNomeContato] = useState('');
+    const [retorno, setRetorno] = useState(undefined);
+    const [cnpj, setCnpj] = useState(undefined);
+    const [razaoSocial, setRazaoSocial] = useState(undefined);
+    const [emailContato, setEmailContato] = useState(undefined);
+    const [uf, setUf] = useState(undefined);
+    const [nomeContato, setNomeContato] = useState(undefined);
     const [aguardando, setAguardando] = useState(false);
     const ufs = ['RO', 'AC', 'AM', 'RR', 'PA', 'AP', 'TO', 'MA', 'PI', 'CE', 'RN', 'PB', 'PE', 'AL', 'SE', 'BA', 'MG', 'ES', 'RJ', 'SP', 'PR', 'SC', 'RS', 'MS', 'MT', 'GO', 'DF'];
     const fornecedorService = new FornecedorService();
-    const [irPara, setIrPara] = useState('');
+    const [irPara, setIrPara] = useState(undefined);
 
     const cadastrarFornecedor = async () => {
         if (!criticas())

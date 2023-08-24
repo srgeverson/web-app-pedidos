@@ -13,14 +13,14 @@ import ModalCarregando from '../../components/ModalCarregando';
 import PedidoService from '../../../service/PedidoService';
 
 const Pedido = () => {
-    const [retorno, setRetorno] = useState('');
+    const [retorno, setRetorno] = useState(undefined);
     const [aguardando, setAguardando] = useState(false);
     const [pedidos, setPedidos] = useState([]);
-    const [idParaApagar, setIdParaApagar] = useState('');
+    const [idParaApagar, setIdParaApagar] = useState(undefined);
     const [confirmarExclusao, setConfirmarExclusao] = useState(false);
     const location = useLocation();
     const pedidoService = new PedidoService();  
-    const [irPara, setIrPara] = useState('');
+    const [irPara, setIrPara] = useState(undefined);
 
     useEffect(() => {
         if (location && location.state)

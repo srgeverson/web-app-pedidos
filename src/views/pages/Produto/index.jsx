@@ -14,10 +14,10 @@ import ProdutoService from '../../../service/ProdutoService';
 import { useAppContext } from '../../../core/Context';
 
 const Produto = () => {
-    const [retorno, setRetorno] = useState('');
+    const [retorno, setRetorno] = useState(undefined);
     const [aguardando, setAguardando] = useState(false);
     const [produtos, setProdutos] = useState([]);
-    const [idParaApagar, setIdParaApagar] = useState('');
+    const [idParaApagar, setIdParaApagar] = useState(undefined);
     const [confirmarExclusao, setConfirmarExclusao] = useState(false);
     const location = useLocation();
     const produdoService = new ProdutoService();
