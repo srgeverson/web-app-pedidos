@@ -12,8 +12,14 @@ const AuthorizeContext = ({ children }) => {
     useEffect(() => {
         const getToken = () => {
             const tokenLocal = localStorage.getItem(nomeVariaveis.token);
-            if (tokenLocal)
-                setToken(tokenLocal);
+            if (tokenLocal){
+                try {
+                    let tokenJSON = JSON.parse(tokenLocal);
+                    setToken(tokenJSON);
+                } catch (error) {
+                    setToken(tokenLocal);
+                }
+            }
             setLoading(false);
         }
 

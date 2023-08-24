@@ -11,7 +11,7 @@ const api = (token) => {
             'Content-Type': 'application/json;charset=utf-8',
             'Access-Control-Allow-Origin': 'http://localhost:1433/',
             'Access-Control-Allow-Credentials': 'true',
-            'Authorization': `Bearer ${JSON.parse(token)}`,
+            'Authorization': `Bearer ${token}`,
         }
     });
 }

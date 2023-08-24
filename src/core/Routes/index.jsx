@@ -45,7 +45,7 @@ const Rotas = () => {
                         <Route path={`${publicURL}${rotas.cadastroDeProduto}`} element={<AuthorizeProvider />} >
                             <Route path={`${publicURL}${rotas.cadastroDeProduto}`} element={Container(CriarProduto)} />
                         </Route>
-                        <Route path={`${publicURL}${rotas.listaDeFornecedor}`} element={Container(Fornecedor)} >
+                        <Route path={`${publicURL}${rotas.listaDeFornecedor}`} element={<AuthorizeProvider />} >
                             <Route path={`${publicURL}${rotas.listaDeFornecedor}`} element={Container(Fornecedor)} />
                         </Route>
                         <Route path={`${publicURL}${rotas.listaDePedidos}`} element={<AuthorizeProvider />} >
@@ -54,9 +54,9 @@ const Rotas = () => {
                         <Route path={`${publicURL}${rotas.listaDeProdutos}`} element={<AuthorizeProvider />} >
                             <Route path={`${publicURL}${rotas.listaDeProdutos}`} element={Container(Produto)} />
                         </Route>
-                        <Route path={`${publicURL}${rotas.paginaInicial}`} element={<AuthorizeProvider />} >
-                            <Route path={`${publicURL}${rotas.paginaInicial}`} element={Container(Home)} />
-                        </Route>
+                        {/* <Route path={`${publicURL}${rotas.paginaInicial}`} element={<AuthorizeProvider />} > */}
+                        <Route path={`${publicURL}${rotas.paginaInicial}`} element={Container(Home)} />
+                        {/* </Route> */}
                         <Route path={`${publicURL}${rotas.visualizacaoDeFornecedor}:id`} element={<AuthorizeProvider />} >
                             <Route path={`${publicURL}${rotas.visualizacaoDeFornecedor}:id`} element={Container(VisualizarFornecedor)} />
                         </Route>
