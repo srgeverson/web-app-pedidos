@@ -1,6 +1,6 @@
 import React from 'react';
 import Children from './Children';
-import '../../assets/styles/children.css';
+import '../../../assets/styles/children.css';
 
 const Container = Component => {
     return (

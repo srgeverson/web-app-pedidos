@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import BarraDeFerramentas from '../../views/components/BarraDeFerramentas';
-import BarraDeMenu from '../../views/components/MenuEsquerdo';
+import BarraDeFerramentas from '../../../views/components/BarraDeFerramentas';
+import BarraDeMenu from '../../../views/components/MenuEsquerdo';
 
 const Children = (props) => {
     const [menuAberto, setMenuAberto] = useState(true);
