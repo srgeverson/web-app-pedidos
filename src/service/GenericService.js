@@ -58,21 +58,6 @@ class GenericService {
             });
     }
 
-    //migrar para contet API
-    getToken() {
-        return localStorage.getItem('token');
-    }
-
-    //migrar para contet API
-    limparToken() {
-        localStorage.removeItem('token');
-    }
-
-    //migrar para contet API
-    salvarToken(accessToken) {
-        localStorage.setItem('token', JSON.stringify(accessToken));
-    }
-
     retornaId(id) {
         let resultado = [];
         if (typeof id === 'object') {
@@ -84,6 +69,8 @@ class GenericService {
             resultado.push(`id=${id}`);
 
         let ids = resultado.join('&');
+        console.log(ids);
+        console.log(id);
         return ids;
     }
 }

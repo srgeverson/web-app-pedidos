@@ -10,6 +10,7 @@ import ProdutoService from '../../../../service/ProdutoService';
 import FornecedorService from '../../../../service/FornecedorService';
 import ModalCarregando from '../../../components/ModalCarregando';
 import { formataMoeda } from '../../../../core/Utils';
+import { useAppContext } from '../../../../core/Context';
 
 const Criar = () => {
     const [retorno, setRetorno] = useState(undefined);
@@ -24,6 +25,7 @@ const Criar = () => {
     const produtoService = new ProdutoService();
     const fornecedorService = new FornecedorService();
     const [irPara, setIrPara] = useState(undefined);
+    const { token, handleLogout } = useAppContext();
 
     useEffect(() => {
         pesquisarProdutos();
@@ -36,12 +38,11 @@ const Criar = () => {
             return;
 
         setAguardando(true);
-        const usuarioCadastrado = await pedidoService.cadastrar({ pedidoRequests: itens });
+        const usuarioCadastrado = await pedidoService.cadastrar(token, '/pedido/cadastrar', { pedidoRequests: itens });
         if (usuarioCadastrado.statusCode) {
-            if (usuarioCadastrado.statusCode === 401){
-                fornecedorService.limparToken();
-                setIrPara({ rota: rotas.login, statusCode: usuarioCadastrado.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
-            } else
+            if (usuarioCadastrado.statusCode === 401)
+                handleLogout();
+            else
                 setRetorno(usuarioCadastrado);
         } else
             setIrPara({ rota: rotas.listaDePedidos, statusCode: 200, mensagem: 'Pedido cadastrado com sucesso!' });
@@ -51,12 +52,11 @@ const Criar = () => {
 
     const pesquisarProdutos = async () => {
         setAguardando(true);
-        const listarTodos = await produtoService.listarTodos();
+        const listarTodos = await produtoService.listarTodos(token, '/produto/todos');
         if (listarTodos.statusCode) {
-            if (listarTodos.statusCode === 401){
-                produtoService.limparToken();
-                setIrPara({ rota: rotas.login, statusCode: listarTodos.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
-            } else
+            if (listarTodos.statusCode === 401)
+                handleLogout();
+            else
                 setRetorno(listarTodos);
         } else
             setProdutos(listarTodos);
@@ -65,12 +65,11 @@ const Criar = () => {
 
     const pesquisarFornecedores = async () => {
         setAguardando(true);
-        const listarTodos = await fornecedorService.listarTodos();
+        const listarTodos = await fornecedorService.listarTodos(token, '/fornecedor/todos');
         if (listarTodos.statusCode) {
-            if (listarTodos.statusCode === 401){
-                fornecedorService.limparToken();
-                setIrPara({ rota: rotas.login, statusCode: listarTodos.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
-            } else
+            if (listarTodos.statusCode === 401)
+                handleLogout();
+            else
                 setRetorno(listarTodos);
         } else
             setFornecedores(listarTodos);
@@ -80,9 +79,9 @@ const Criar = () => {
     const adicionarItem = async () => {
         setAguardando(true);
 
-        const buscarProduto = await produtoService.buscarPorId(produto);
+        const buscarProduto = await produtoService.buscarPorId(token, '/produto/por-codigo', { codigo: produto });
         if (buscarProduto.statusCode) {
-            if (buscarProduto.statusCode === 401){
+            if (buscarProduto.statusCode === 401) {
                 produtoService.limparToken();
                 setIrPara({ rota: rotas.login, statusCode: buscarProduto.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
             } else

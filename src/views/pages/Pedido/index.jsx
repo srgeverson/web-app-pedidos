@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { DropdownMenu, DropdownToggle, FormGroup, UncontrolledButtonDropdown } from 'reactstrap';
 import { publicURL, rotas } from '../../../core/Config';
 import { formataDataEHora, formataMoeda } from '../../../core/Utils';
@@ -11,6 +11,7 @@ import BotaoPesquisar from '../../components/BotaoPesquisar';
 import ModalApagar from '../../components/ModalApagar';
 import ModalCarregando from '../../components/ModalCarregando';
 import PedidoService from '../../../service/PedidoService';
+import { useAppContext } from '../../../core/Context';
 
 const Pedido = () => {
     const [retorno, setRetorno] = useState(undefined);
@@ -20,7 +21,7 @@ const Pedido = () => {
     const [confirmarExclusao, setConfirmarExclusao] = useState(false);
     const location = useLocation();
     const pedidoService = new PedidoService();  
-    const [irPara, setIrPara] = useState(undefined);
+    const { token, handleLogout } = useAppContext();
 
     useEffect(() => {
         if (location && location.state)
@@ -30,13 +31,12 @@ const Pedido = () => {
 
     const pesquisarPedidos = async () => {
         setAguardando(true);
-        const listarTodos = await pedidoService.listarTodos();
+        const listarTodos = await pedidoService.listarTodos(token, '/pedido/todos');
         const resumo = await pedidoService.montaResumoPedido(listarTodos);
         if (listarTodos.statusCode) {
-            if (listarTodos.statusCode === 401){
-                pedidoService.limparToken();
-                setIrPara({ rota: rotas.login, statusCode: listarTodos.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
-            } else
+            if (listarTodos.statusCode === 401)
+                handleLogout();
+            else
                 setRetorno(listarTodos);
         } else
             setPedidos(resumo);
@@ -46,11 +46,10 @@ const Pedido = () => {
     const apagarPedido = async () => {
         setAguardando(true);
         const apagar = await pedidoService.apagarPorId(idParaApagar);
-        if (apagar.statusCode) {
-            if (apagar.statusCode === 401){
-                pedidoService.limparToken();
-                setIrPara({ rota: rotas.login, statusCode: apagar.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
-            } else
+        if (apagar.statusCode)  {
+            if (apagar.statusCode === 401)
+                handleLogout();
+            else
                 setRetorno(apagar);
         } else {
             setRetorno({ statusCode: 200, mensagem: 'Pedido apagado com sucesso!' });
@@ -64,9 +63,6 @@ const Pedido = () => {
         setConfirmarExclusao(true);
         setIdParaApagar(id);
     }
-
-    if (irPara)
-        return <Navigate to={`${publicURL}${irPara.rota}`} state={{ statusCode: irPara.statusCode, mensagem: irPara.mensagem }} replace />
 
     return (
         <div>

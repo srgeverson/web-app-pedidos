@@ -12,6 +12,7 @@ import FornecedorService from '../../../../service/FornecedorService';
 import ModalApagar from '../../../components/ModalApagar';
 import ModalCarregando from '../../../components/ModalCarregando';
 import { formataMoeda } from '../../../../core/Utils';
+import { useAppContext } from '../../../../core/Context';
 
 const Alterar = () => {
     const [retorno, setRetorno] = useState(undefined);
@@ -30,6 +31,7 @@ const Alterar = () => {
     const fornecedorService = new FornecedorService();
     const { id } = useParams();
     const [irPara, setIrPara] = useState(undefined);
+    const { token, handleLogout } = useAppContext();
 
     useEffect(() => {
         receberDadosPedido();
@@ -40,12 +42,11 @@ const Alterar = () => {
 
     const receberDadosPedido = async () => {
         setAguardando(true);
-        const pedidoPorId = await pedidoService.buscarPorId(id);
+        const pedidoPorId = await pedidoService.buscarPorId(token, '/pedido/por-id', { codigoPedido: id });
         if (pedidoPorId.statusCode) {
-            if (pedidoPorId.statusCode === 401){
-                pedidoService.limparToken();
-                setIrPara({ rota: rotas.login, statusCode: pedidoPorId.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
-            } else
+            if (pedidoPorId.statusCode === 401)
+                handleLogout();
+            else
                 setRetorno(pedidoPorId);
         } else {
             if (pedidoPorId) {
@@ -70,14 +71,13 @@ const Alterar = () => {
             return;
 
         setAguardando(true);
-        const pedidoAlterado = await pedidoService.alterar(id, itens);
+        const pedidoAlterado = await pedidoService.alterar(token, '/pedido/atualizar', { codigoPedido: id }, { pedidoRequests: itens });
         if (pedidoAlterado.statusCode) {
-            if (pedidoAlterado.statusCode === 401){
-                fornecedorService.limparToken();
-                setIrPara({ rota: rotas.login, statusCode: pedidoAlterado.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
-            } else
+            if (pedidoAlterado.statusCode === 401)
+                handleLogout();
+            else
                 setRetorno(pedidoAlterado);
-        } else 
+        } else
             setIrPara({ rota: rotas.listaDePedidos, statusCode: 200, mensagem: 'Pedido alterado com sucesso!' });
 
         setAguardando(false);
@@ -89,17 +89,20 @@ const Alterar = () => {
 
     const pesquisarProdutos = async () => {
         setAguardando(true);
-        const listarTodos = await produtoService.listarTodos();
-        if (listarTodos.statusCode) 
-            setRetorno(listarTodos);
-        else
+        const listarTodos = await produtoService.listarTodos(token, '/produto/todos');
+        if (listarTodos.statusCode) {
+            if (listarTodos.statusCode === 401)
+                handleLogout();
+            else
+                setRetorno(listarTodos);
+        } else
             setProdutos(listarTodos);
         setAguardando(false);
     }
 
     const pesquisarFornecedores = async () => {
         setAguardando(true);
-        const listarTodos = await fornecedorService.listarTodos();
+        const listarTodos = await fornecedorService.listarTodos(token, '/fornecedor/todos');
         if (listarTodos.statusCode)
             setRetorno(listarTodos);
         else
@@ -109,11 +112,14 @@ const Alterar = () => {
 
     const apagarPedido = async () => {
         setAguardando(true);
-        const apagar = await pedidoService.apagarPorIdPedido(codigoPedido, fornecedor, codigoProduto);
-        if (apagar.statusCode) 
-            setRetorno(apagar);
-        else {
-            setRetorno({statusCode:200, mensagem: 'Item removido com sucesso!' });
+        const apagar = await pedidoService.apagarPorId(token, '/pedido/apagar', { codigoPedido, fornecedor, codigoProduto });
+        if (apagar.statusCode) {
+            if (apagar.statusCode === 401)
+                handleLogout();
+            else
+                setRetorno(apagar);
+        } else {
+            setRetorno({ statusCode: 200, mensagem: 'Item removido com sucesso!' });
             setConfirmarExclusao(false);
             receberDadosPedido();
         }
@@ -123,8 +129,8 @@ const Alterar = () => {
     const adicionarItem = async () => {
         setAguardando(true);
 
-        const buscarProduto = await produtoService.buscarPorId(produto);
-        if (buscarProduto.statusCode) 
+        const buscarProduto = await produtoService.buscarPorId(token, '/produto/por-codigo', { codigo: produto });
+        if (buscarProduto.statusCode)
             setRetorno(buscarProduto);
         else {
             let listaAtual = itens;
