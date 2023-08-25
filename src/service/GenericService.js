@@ -69,8 +69,6 @@ class GenericService {
             resultado.push(`id=${id}`);
 
         let ids = resultado.join('&');
-        console.log(ids);
-        console.log(id);
         return ids;
     }
 }
