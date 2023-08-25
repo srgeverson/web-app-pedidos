@@ -6,6 +6,8 @@ import BotaoConfirmar from '../../../components/BotaoConfirmar';
 import Alerta from '../../../components/Alerta';
 import FornecedorService from '../../../../service/FornecedorService';
 import ModalCarregando from '../../../components/ModalCarregando';
+import EstadoService from '../../../../service/EstadoService';
+import { useAppContext } from '../../../../core/Context';
 
 const Criar = () => {
     const [retorno, setRetorno] = useState(undefined);
@@ -15,23 +17,23 @@ const Criar = () => {
     const [uf, setUf] = useState(undefined);
     const [nomeContato, setNomeContato] = useState(undefined);
     const [aguardando, setAguardando] = useState(false);
-    const ufs = ['RO', 'AC', 'AM', 'RR', 'PA', 'AP', 'TO', 'MA', 'PI', 'CE', 'RN', 'PB', 'PE', 'AL', 'SE', 'BA', 'MG', 'ES', 'RJ', 'SP', 'PR', 'SC', 'RS', 'MS', 'MT', 'GO', 'DF'];
     const fornecedorService = new FornecedorService();
+    const estadoService = new EstadoService();
     const [irPara, setIrPara] = useState(undefined);
+    const { token, handleLogout } = useAppContext();
 
     const cadastrarFornecedor = async () => {
         if (!criticas())
             return;
 
         setAguardando(true);
-        const fornecedorCadastrado = await fornecedorService.cadastrar({ cnpj, razaoSocial, nomeContato, emailContato, uf });
+        const fornecedorCadastrado = await fornecedorService.cadastrar(token, '/fornecedor/cadastrar', { cnpj, razaoSocial, nomeContato, emailContato, uf });
         if (fornecedorCadastrado.statusCode) {
-            if (fornecedorCadastrado.statusCode === 401){
-                fornecedorService.limparToken();
-                setIrPara({ rota: rotas.login, statusCode: fornecedorCadastrado.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
-            } else
+            if (fornecedorCadastrado.statusCode === 401)
+                handleLogout();
+            else
                 setRetorno(fornecedorCadastrado);
-        } else 
+        } else
             setIrPara({ rota: rotas.listaDeFornecedor, statusCode: 200, mensagem: 'Fornecedor cadastrado com sucesso!' });
 
         setAguardando(false);
@@ -99,11 +101,7 @@ const Criar = () => {
                         placeholder="Selecione uma UF"
                         onChange={(ev) => setUf(ev.target.value)}>
                         <option key=''></option>
-                        {ufs.map(
-                            (uf) => (
-                                <option value={uf}>{uf}</option>
-                            )
-                        )}
+                        {estadoService.listarUFs().map((uf) => <option key={uf} value={uf}>{uf}</option>)}
                     </select>
                 </FormGroup>
                 <FormGroup>

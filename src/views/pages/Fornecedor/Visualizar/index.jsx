@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import FornecedorService from '../../../../service/FornecedorService';
 import Alerta from '../../../components/Alerta';
 import { publicURL, rotas } from '../../../../core/Config';
 import ModalCarregando from '../../../components/ModalCarregando';
+import { useAppContext } from '../../../../core/Context';
 
 const Visualizar = () => {
     const [retorno, setRetorno] = useState(undefined);
@@ -12,10 +13,10 @@ const Visualizar = () => {
     const fornecedorService = new FornecedorService();
     const [aguardando, setAguardando] = useState(false);
     const location = useLocation();
-    const [irPara, setIrPara] = useState(undefined);
+    const { token, handleLogout } = useAppContext();
 
     useEffect(() => {
-        if (location && location.state) 
+        if (location && location.state)
             setRetorno(location.state);
         getUsuario(id);
         // eslint-disable-next-line
@@ -23,20 +24,16 @@ const Visualizar = () => {
 
     const getUsuario = async (id) => {
         setAguardando(true);
-        const fornecedorPorId = await fornecedorService.buscarPorId(id);
+        const fornecedorPorId = await fornecedorService.buscarPorId(token, '/fornecedor/por-cnpj', { cnpj: id });
         if (fornecedorPorId.statusCode) {
-            if (fornecedorPorId.statusCode === 401){
-                fornecedorService.limparToken();
-                setIrPara({ rota: rotas.login, statusCode: fornecedorPorId.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
-            } else
+            if (fornecedorPorId.statusCode === 401)
+                handleLogout();
+            else
                 setRetorno(fornecedorPorId);
-        } else 
+        } else
             setFornecedor(fornecedorPorId);
         setAguardando(false);
     }
-
-    if (irPara)
-        return <Navigate to={`${publicURL}${irPara.rota}`} state={{ statusCode: irPara.statusCode, mensagem: irPara.mensagem }} replace />
 
     return (
         <div>
