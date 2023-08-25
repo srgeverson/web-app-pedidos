@@ -6,26 +6,27 @@ import BotaoConfirmar from '../../../components/BotaoConfirmar';
 import Alerta from '../../../components/Alerta';
 import ProdutoService from '../../../../service/ProdutoService';
 import ModalCarregando from '../../../components/ModalCarregando';
+import { useAppContext } from '../../../../core/Context';
 
 const Criar = () => {
-    const [retorno, setRetorno] = useState('');
-    const [descricao, setDescricao] = useState('');
-    const [valor, setValor] = useState('');
+    const [retorno, setRetorno] = useState(undefined);
+    const [descricao, setDescricao] = useState(undefined);
+    const [valor, setValor] = useState(undefined);
     const [aguardando, setAguardando] = useState(false);
     const produtoService = new ProdutoService();
-    const [irPara, setIrPara] = useState('');
+    const [irPara, setIrPara] = useState(undefined);
+    const { token, handleLogout } = useAppContext();
 
     const cadastrarProduto = async () => {
         if (!criticas())
             return;
 
         setAguardando(true);
-        const produtoCadastrado = await produtoService.cadastrar({ descricao, valor });
+        const produtoCadastrado = await produtoService.cadastrar(token, '/produto/cadastrar', { descricao, valor });
         if (produtoCadastrado.statusCode) {
-            if (produtoCadastrado.statusCode === 401) {
-                produtoService.limparToken();
-                setIrPara({ rota: rotas.login, statusCode: produtoCadastrado.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
-            } else
+            if (produtoCadastrado.statusCode === 401)
+                handleLogout();
+            else
                 setRetorno(produtoCadastrado);
         } else
             setIrPara({ rota: rotas.listaDeFornecedor, statusCode: 200, mensagem: 'Produto cadastrado com sucesso!' });

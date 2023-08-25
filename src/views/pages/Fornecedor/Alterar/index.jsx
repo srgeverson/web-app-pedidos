@@ -6,19 +6,22 @@ import BotaoConfirmar from '../../../components/BotaoConfirmar';
 import Alerta from '../../../components/Alerta';
 import FornecedorService from '../../../../service/FornecedorService';
 import ModalCarregando from '../../../components/ModalCarregando';
+import { useAppContext } from '../../../../core/Context';
+import EstadoService from '../../../../service/EstadoService';
 
 const Alterar = () => {
-    const [retorno, setRetorno] = useState('');
-    const [cnpj, setCnpj] = useState('');
-    const [razaoSocial, setRazaoSocial] = useState('');
-    const [emailContato, setEmailContato] = useState('');
-    const [uf, setUf] = useState('');
-    const [nomeContato, setNomeContato] = useState('');
+    const [retorno, setRetorno] = useState(undefined);
+    const [cnpj, setCnpj] = useState(undefined);
+    const [razaoSocial, setRazaoSocial] = useState(undefined);
+    const [emailContato, setEmailContato] = useState(undefined);
+    const [uf, setUf] = useState(undefined);
+    const [nomeContato, setNomeContato] = useState(undefined);
     const [aguardando, setAguardando] = useState(false);
-    const [irPara, setIrPara] = useState('');
+    const [irPara, setIrPara] = useState(undefined);
     const fornecedorService = new FornecedorService();
+    const estadoService = new EstadoService();
     const { id } = useParams();
-    const ufs = ['RO', 'AC', 'AM', 'RR', 'PA', 'AP', 'TO', 'MA', 'PI', 'CE', 'RN', 'PB', 'PE', 'AL', 'SE', 'BA', 'MG', 'ES', 'RJ', 'SP', 'PR', 'SC', 'RS', 'MS', 'MT', 'GO', 'DF'];
+    const { token, handleLogout } = useAppContext();
 
     useEffect(() => {
         receberDadosFornecedor();
@@ -27,10 +30,13 @@ const Alterar = () => {
 
     const receberDadosFornecedor = async () => {
         setAguardando(true);
-        const fornecedorPorId = await fornecedorService.buscarPorId(id);
-        if (fornecedorPorId.statusCode)
-            setRetorno(fornecedorPorId);
-        else {
+        const fornecedorPorId = await fornecedorService.buscarPorId(token, '/fornecedor/por-cnpj', { cnpj: id });
+        if (fornecedorPorId.statusCode) {
+            if (fornecedorPorId.statusCode === 401)
+                handleLogout();
+            else
+                setRetorno(fornecedorPorId);
+        } else {
             if (fornecedorPorId) {
                 setCnpj(fornecedorPorId.cnpj);
                 setRazaoSocial(fornecedorPorId.razaoSocial);
@@ -47,17 +53,15 @@ const Alterar = () => {
             return;
 
         setAguardando(true);
-        const fornecedorAlterado = await fornecedorService.alterar(id, { cnpj: id, razaoSocial, nomeContato, emailContato, uf });
+        const fornecedorAlterado = await fornecedorService.alterar(token, '/fornecedor/atualizar', { cnpj: id }, { cnpj: id, razaoSocial, nomeContato, emailContato, uf });
 
         if (fornecedorAlterado.statusCode) {
-            if (fornecedorAlterado.statusCode === 401){
-                fornecedorService.limparToken();
-                setIrPara({ rota: rotas.login, statusCode: fornecedorAlterado.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
-            } else
+            if (fornecedorAlterado.statusCode === 401)
+                handleLogout();
+            else
                 setRetorno(fornecedorAlterado);
-        } else 
+        } else
             setIrPara({ rota: rotas.listaDeFornecedor, statusCode: 200, mensagem: 'Fornecedor alterado com sucesso!' });
-
 
         setAguardando(false);
     }
@@ -130,11 +134,7 @@ const Alterar = () => {
                         onChange={(ev) => setUf(ev.target.value)}
                         value={uf}>
                         <option key={''}></option>
-                        {ufs.map(
-                            (uf) => (
-                                <option key={uf} value={uf}>{uf}</option>
-                            )
-                        )}
+                        {estadoService.listarUFs().map((uf) => <option key={uf} value={uf}>{uf}</option>)}
                     </select>
                 </FormGroup>
                 <FormGroup>

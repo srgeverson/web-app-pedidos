@@ -3,13 +3,15 @@ import UsuarioService from '../../../service/UsuarioService';
 import Alerta from '../../components/Alerta';
 import ModalCarregando from '../../components/ModalCarregando';
 import { useLocation } from 'react-router-dom';
+import { useAppContext } from '../../../core/Context';
 
 const Home = () => {
 
     const usuarioService = new UsuarioService();
-    const [retorno, setRetorno] = useState('');
+    const [retorno, setRetorno] = useState(undefined);
     const [aguardando, setAguardando] = useState(false);
     const location = useLocation();
+    const { salvarToken, token } = useAppContext();
 
     useEffect(() => {
         if (location && location.state)
@@ -20,13 +22,12 @@ const Home = () => {
 
     const gerarToken = async () => {
         setAguardando(true);
-        const tokenExistente = usuarioService.getToken()
-        if (!tokenExistente) {
+        if (!token) {
             const tokenGerado = await usuarioService.token();
             if (tokenGerado.statusCode)
                 setRetorno(tokenGerado);
             else
-                usuarioService.salvarToken(tokenGerado.access_token);
+                salvarToken(tokenGerado.access_token);
         }
         setAguardando(false);
     }
@@ -34,8 +35,8 @@ const Home = () => {
     return (
         <div className="d-flex justify-content-between">
             <div className="alert alert-success" role="alert">
-            <Alerta retorno={retorno} />
-            <ModalCarregando isOpen={aguardando} pagina='Autenticando a aplicação...' />
+                <Alerta retorno={retorno} />
+                <ModalCarregando isOpen={aguardando} pagina='Autenticando a aplicação...' />
                 <h4 className="alert-heading">Bem-vindo ao nosso Sistema de Gestão de Pedidos!</h4>
                 <p>É com imenso prazer que lhe damos as boas-vindas à nossa plataforma de gestão de pedidos. Estamos aqui para simplificar e otimizar todo o processo de gerenciamento de pedidos, desde o momento em que são feitos até a sua conclusão.</p>
                 <hr />

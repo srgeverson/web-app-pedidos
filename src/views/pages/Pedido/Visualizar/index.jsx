@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { FormGroup, Label, Input, Row, Col } from 'reactstrap';
 import { publicURL, rotas } from '../../../../core/Config';
 import Alerta from '../../../components/Alerta';
 import PedidoService from '../../../../service/PedidoService';
 import ModalCarregando from '../../../components/ModalCarregando';
 import { formataDataEHora, formataMoeda } from '../../../../core/Utils';
+import { useAppContext } from '../../../../core/Context';
 
 const Alterar = () => {
-    const [retorno, setRetorno] = useState('');
-    const [dataPedido, setDataPedido] = useState('');
-    const [valorTotalPedido, setValorTotalPedido] = useState('');
+    const [retorno, setRetorno] = useState(undefined);
+    const [dataPedido, setDataPedido] = useState(undefined);
+    const [valorTotalPedido, setValorTotalPedido] = useState(undefined);
     const [aguardando, setAguardando] = useState(false);
-    const [quantidadeTotalProdutos, setQuantidadeTotalProdutos] = useState('');
+    const [quantidadeTotalProdutos, setQuantidadeTotalProdutos] = useState(undefined);
     const [itens, setItens] = useState([]);
     const pedidoService = new PedidoService();
     const { id } = useParams();
-    const [irPara, setIrPara] = useState('');
+    const { token, handleLogout } = useAppContext();
 
     useEffect(() => {
         receberDadosPedido();
@@ -25,12 +26,11 @@ const Alterar = () => {
 
     const receberDadosPedido = async () => {
         setAguardando(true);
-        const pedidoPorId = await pedidoService.buscarPorId(id);
+        const pedidoPorId = await pedidoService.buscarPorId(token, '/pedido/por-id', { codigoPedido: id });
         if (pedidoPorId.statusCode) {
-            if (pedidoPorId.statusCode === 401) {
-                pedidoService.limparToken();
-                setIrPara({ rota: rotas.login, statusCode: pedidoPorId.statusCode, mensagem: 'Não autorizado ou tempo expirado!' });
-            } else
+            if (pedidoPorId.statusCode === 401)
+                handleLogout();
+            else
                 setRetorno(pedidoPorId);
         } else {
             if (pedidoPorId) {
@@ -43,9 +43,6 @@ const Alterar = () => {
         }
         setAguardando(false);
     }
-
-    if (irPara)
-        return <Navigate to={`${publicURL}${irPara.rota}`} state={{ statusCode: irPara.statusCode, mensagem: irPara.mensagem }} replace />
 
     return (
         <div>
