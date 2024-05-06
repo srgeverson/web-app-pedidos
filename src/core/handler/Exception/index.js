@@ -6,7 +6,7 @@ const errorHandler = (erro) => {
             descricao: erro.data.descricao
         };
     } else {
-        if(erro.status){
+        if(erro && erro.status){
             return { 
                 statusCode: erro.status, 
                 mensagem:"Falha na operação", 
